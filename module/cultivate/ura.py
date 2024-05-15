@@ -21,6 +21,8 @@ class Ura:
     def run(self):
 
         last_page = ""
+        uma_name = "resource.uma_file" + "." + self.uma_name
+        uma_model = importlib.import_module(uma_name)
 
         while True:
 
@@ -46,12 +48,11 @@ class Ura:
                 try:
                     this_round = get_round(screen, self.ocr)
                     print(this_round)
+                    print("==========")
                 except Exception as e:
                     print(e)
                     continue
 
-                uma_name = "resource.uma_file" + "." + self.uma_name
-                uma_model = importlib.import_module(uma_name)
                 if uma_model.data["schedule"][this_round] in [2, 3, 4]:
                     self.d.click(510, 1130)
                     time.sleep(DEFAULT_SLEEP_TIME)
