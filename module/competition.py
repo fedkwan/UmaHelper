@@ -35,7 +35,7 @@ class Competition:
             # 用4个方块的底部的灰线上的点的颜色来定位当前页面
             # 判断是不是每周结算时刻
             gray = np.array([109, 84, 89])
-            _a, _b, _c, _d = screen[950, 200], screen[950, 520], screen[1106, 200], screen[1106, 520]
+            _a, _b, _c, _d = screen[950, 320], screen[950, 400], screen[1106, 320], screen[1106, 400]
             if np.all(_a == _b) and np.all(_b == _c) and np.all(_c == _d) and np.all(_d == gray):
                 # 判断第一格RP点槽是否为灰色，如果不是，说明还有RP点
                 if np.all(screen[65, 430] != np.array([89, 76, 81])) and (is_monday_midnight_to_five() is False):
