@@ -1,3 +1,4 @@
+import ddddocr
 from method.recognition.textRecognizer import *
 from method.utils import *
 
@@ -95,8 +96,7 @@ if __name__ == "__main__":
     import cv2
     import uiautomator2 as u2
 
-
     _screen = cv2.imread("../../temp.png")
     _ocr = ddddocr.DdddOcr()
-    print(get_attribute(_screen, _ocr))
+    print(get_attribute_up_if_train(_screen, _ocr, selection=1))
     print(type(_screen))

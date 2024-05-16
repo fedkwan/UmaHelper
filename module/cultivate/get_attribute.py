@@ -1,6 +1,6 @@
 import numpy
-from method.recognition.textRecognizer import *
 import ddddocr
+from method.recognition.textRecognizer import *
 
 """
     获取马娘的五维数值，返回一个数组，目前在 Ura 和 青春杯都适用。
