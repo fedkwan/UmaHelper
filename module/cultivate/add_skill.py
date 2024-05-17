@@ -31,8 +31,8 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = ddddocr.DdddOcr()
 
-    # _d.swipe(360, 920, 360, 556)
+    _d.swipe(360, 1000, 360, 520, 1)
 
     # add_skill(_d, _ocr)
 
-    fix_swipe(_d)
+    #fix_swipe(_d)
