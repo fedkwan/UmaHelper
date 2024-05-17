@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import uiautomator2 as u2
 import numpy as np
@@ -11,18 +13,28 @@ logger.setLevel(logging.ERROR)
 
 
 def add_skill(d: u2.connect(), ocr: PaddleOCR()):
-    screen = d.screenshot(format="opencv")
+    all_skill_text_li = []
+    count = 0
+    while True:
+        screen = d.screenshot(format="opencv")
 
+        boundary_li = get_box_boundary(screen)
+        for g in boundary_li:
+            cropped_image = screen[g[0]:g[0] + 52, 138:482]
+            _result = _ocr.ocr(cropped_image)[0][0][1][0]
+            all_skill_text_li.append(_result)
 
-def fix_swipe(d: u2.connect()):
-    screen = d.screenshot(format="opencv")
-    i = 0
-    for i in range(472, 1280):
-        if np.all(screen[i, 360] != np.array([255, 255, 255])):
+        d.swipe(360, 900, 360, 500, 1)
+
+        if count == 1:
             break
-    print(i)
-    gap = i - 472
-    d.swipe(360, 900, 360, 900 - gap * 1.8)
+
+        if np.all(screen[1013, 700] == np.array([142, 120, 125])):
+            count += 1
+
+        time.sleep(1)
+
+    return all_skill_text_li
 
 
 def get_box_boundary(screen: np.ndarray):
@@ -38,13 +50,15 @@ def get_box_boundary(screen: np.ndarray):
     # 将相邻且差值为1的两个数取小数
     adjust_li = []
     i = 0
-    while i < len(y_li):
+    while i < len(y_li) - 1:
         if y_li[i + 1] - y_li[i] == 1:
             adjust_li.append(y_li[i])
             i += 2  # 跳过这对数字
         else:
             adjust_li.append(y_li[i])
             i += 1
+    if i == len(y_li) - 1:
+        adjust_li.append(y_li[i])
     print(adjust_li)
 
     # 计算出坐标对
@@ -67,12 +81,9 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = PaddleOCR()
     _screen = _d.screenshot(format="opencv")
-    gg = get_box_boundary(_screen)
-    print(gg)
 
-    text_li = []
-    for g in gg:
-        cropped_image = _screen[g[0]:g[0] + 52, 138:482]
-        _result = _ocr.ocr(cropped_image)[0][0][1][0]
-        text_li.append(_result)
-    print(text_li)
+    l = add_skill(_d, _ocr)
+
+    print(l)
+
+
