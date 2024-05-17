@@ -1,4 +1,5 @@
 import os
+import re
 import datetime
 
 DEFAULT_SLEEP_TIME = 0.5
