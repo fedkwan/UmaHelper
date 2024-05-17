@@ -1,9 +1,9 @@
 from airtest.core.api import *
 from airtest.aircv.aircv import *
 from airtest.aircv.template_matching import *
+import numpy as np
 
 import logging
-import numpy as np
 
 __author__ = "user"
 logger = logging.getLogger("airtest")
