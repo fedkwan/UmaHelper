@@ -12,3 +12,10 @@ class TextRecognizer:
         _, image_encode = cv2.imencode('.png', self.image)
         str_match = self.ocr.classification(image_encode.tobytes())
         return str_match
+
+    def find_text_from_image_paddle(self):
+        result = self.ocr.ocr(self.image)[0]
+        _ = []
+        for r in result:
+            _.append(r[1][0])
+        return "".join(_)

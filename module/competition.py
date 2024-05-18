@@ -76,13 +76,13 @@ class Competition:
 
             # 如果是【每日竞赛内容】的首页
             # 用2个方块的底部的灰线上的点的颜色来定位当前页面
-            _j, _k = screen[1030, 200], screen[1030, 520]
+            _j, _k = screen[1030, 320], screen[1030, 400]
             if np.all(_j == _k) and np.all(_k == gray):
                 # 先看左边还有没有次数
                 cropped_image = screen[835:855, 280:300]
                 text_recognizer = TextRecognizer(cropped_image, self.ocr)
                 daily_competition_left_times_text = text_recognizer.find_text_from_image()
-                if daily_competition_left_times_text == "3":
+                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
                     self.d.click(210, 930)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
@@ -95,7 +95,7 @@ class Competition:
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
                 # 如果都没次数，就退出循环了（后续如果要打传奇赛的话这里要改掉）
-                if daily_competition_left_times_text != "3" and daily_legend_competition_left_times_text != "1":
+                if (daily_competition_left_times_text != "3" and daily_competition_left_times_text != "6") and daily_legend_competition_left_times_text != "1":
                     self.d.click(360, 1220)  # 回到首页
                     print("竞赛结束")
                     time.sleep(DEFAULT_SLEEP_TIME)
@@ -111,7 +111,7 @@ class Competition:
                 daily_competition_left_times_text = text_recognizer.find_text_from_image()
                 print(daily_competition_left_times_text)
                 # 判断是否还有次数，没有次数的话就返回 （这里采用更复杂的逻辑，避免出现循环识图的情况）
-                if daily_competition_left_times_text == "3":
+                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
                     self.d.click(360, 830)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
@@ -130,7 +130,7 @@ class Competition:
                 daily_competition_left_times_text = text_recognizer.find_text_from_image()
                 print(daily_competition_left_times_text)
                 # 判断是否还有次数，没有次数的话就返回 （这里采用更复杂的逻辑，避免出现循环识图的情况）
-                if daily_competition_left_times_text == "3":
+                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
                     self.d.click(360, 830)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
