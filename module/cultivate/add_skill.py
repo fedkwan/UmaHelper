@@ -4,7 +4,6 @@ import cv2
 import uiautomator2 as u2
 import numpy as np
 import logging
-from simhash import Simhash
 from paddleocr import PaddleOCR
 
 from method.recognition.textRecognizer import *

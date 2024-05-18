@@ -1,5 +1,5 @@
-from simhash import Simhash
 import Levenshtein
+
 
 def str_similarity(str1, str2):
     '''
