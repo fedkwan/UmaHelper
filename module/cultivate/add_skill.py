@@ -4,101 +4,145 @@ import cv2
 import uiautomator2 as u2
 import numpy as np
 import logging
+import importlib
+
 from paddleocr import PaddleOCR
 
 from method.recognition.textRecognizer import *
 from method.textSimilarity import *
 from module.cultivate.skill_dic import *
+from method.utils import *
+
 
 __author__ = "user"
 logger = logging.getLogger("ppocr")
 logger.setLevel(logging.ERROR)
 
 
-def add_skill(d: u2.connect(), ocr: PaddleOCR(), to_add_skill_list: []):
-    all_skill_text_li = []
-    count = 0
-    while True:
-        screen = d.screenshot(format="opencv")
+class AddSkill:
 
-        boundary_li = get_box_boundary(screen)
-        for g in boundary_li:
-            cropped_image = screen[g[0]:g[0] + 155, 138:483]
-            result = ocr.ocr(cropped_image)[0]
-            _ = []
-            for r in result:
-                _.append(r[1][0])
-            ocred_skill_text = "".join(_)
+    def __init__(self, ocr: PaddleOCR(), d: u2.connect(), setting_file):
+        self.ocr = ocr
+        self.d = d
+        setting_data = importlib.import_module("customer_setting" + "." + setting_file)
+        self.setting_dic = setting_data.data
 
-            most_similar_string = find_most_similar_string(ocred_skill_text, skill_dic_combine_name_and_description)
+    def run(self):
 
-            skill_text = skill_dic_combine_name_and_description_reversal[most_similar_string]
-            print(skill_text)
+        print("准备开始第1轮")
 
-            if skill_text in to_add_skill_list:
-                d.click(650, g[0] + 75)
-                time.sleep(1)
-                continue
+        # 第一轮，加列表内的技能
+        self.add_skill(1)
+        self.scroll_to_top()
 
-        d.swipe(360, 900, 360, 500, 1)
+        print("准备开始第2轮")
 
-        if count == 1:
-            break
-        if np.all(screen[1013, 700] == np.array([142, 120, 125])):
-            count += 1
-        time.sleep(1)
+        # 第二轮，加跑法和距离技能
+        self.add_skill(2)
+        self.scroll_to_top()
 
-    return all_skill_text_li
+        print("准备开始第3轮")
 
+        # 第三轮，加完技能点
+        self.add_skill(3)
 
-def get_box_boundary(screen: np.ndarray):
-    # 获取当前屏幕内技能方框的纵坐标组
-    y_li = []
-    y = 472  # 472 到 1028 是技能列表的范围
-    while y < 1028:
-        # 灰色或者金色边界，如果改了UI就要重新适配颜色咯
-        if np.all(screen[y, 360] == np.array([210, 193, 193])) or np.all(screen[y, 360] == np.array([57, 193, 255])):
-            y_li.append(y)
-        y += 1
-    # print(y_li)
+    def add_skill(self, step):
 
-    # 将相邻且差值为1的两个数取小数
-    adjust_li = []
-    i = 0
-    while i < len(y_li) - 1:
-        if y_li[i + 1] - y_li[i] == 1:
+        while True:
+
+            time.sleep(DEFAULT_SLEEP_TIME)
+            screen = self.d.screenshot(format="opencv")
+
+            cropped_image = screen[406:436, 530:630]
+            result = self.ocr.ocr(cropped_image)[0]
+            ocred_skill_point_text = "".join(r[1][0] for r in result)
+            num = find_numbers_in_string(ocred_skill_point_text, "rude")
+            if num < 100:
+                self.d.click(360, 1080)
+                break
+
+            boundary_li = self.get_box_boundary(self, screen)
+            for g in boundary_li:
+                cropped_image = screen[g[0]:g[0] + 155, 138:483]
+
+                # 识别技能名
+                result = self.ocr.ocr(cropped_image)[0]
+                ocred_skill_text = "".join(r[1][0] for r in result)
+                most_similar_string = find_most_similar_string(ocred_skill_text, skill_dic_combine_name_and_description)
+                skill_text = skill_dic_combine_name_and_description_reversal[most_similar_string]
+                print(skill_text)
+
+                if step == 1:
+                    if skill_text in self.setting_dic["add_skill_list"]:
+                        self.d.click(650, g[0] + 75)
+                        continue
+                if step == 2:
+                    if self.setting_dic["add_skill_running_style"] in skill_text or self.setting_dic["add_skill_running_distance"] in skill_text:
+                        self.d.click(650, g[0] + 75)
+                        continue
+                if step == 3:
+                    self.d.click(650, g[0] + 75)
+
+            self.d.swipe(360, 900, 360, 500, 1)
+
+            if np.all(screen[1013, 700] == np.array([142, 120, 125])):
+                break
+
+    def scroll_to_top(self):
+        while True:
+            screen = self.d.screenshot(format="opencv")
+            if np.all(screen[480, 700] == np.array([142, 120, 125])):
+                break
+            self.d.swipe(360, 500, 360, 1200, 0.2)
+            time.sleep(0.2)
+
+    @staticmethod
+    def get_box_boundary(self, screen: np.ndarray):
+        # 获取当前屏幕内技能方框的纵坐标组
+        y_li = []
+        y = 472  # 472 到 1028 是技能列表的范围
+        while y < 1028:
+            # 灰色或者金色边界，如果改了UI就要重新适配颜色咯
+            if np.all(screen[y, 360] == np.array([210, 193, 193])) or np.all(screen[y, 360] == np.array([57, 193, 255])):
+                y_li.append(y)
+            y += 1
+        # print(y_li)
+
+        # 将相邻且差值为1的两个数取小数
+        adjust_li = []
+        i = 0
+        while i < len(y_li) - 1:
+            if y_li[i + 1] - y_li[i] == 1:
+                adjust_li.append(y_li[i])
+                i += 2  # 跳过这对数字
+            else:
+                adjust_li.append(y_li[i])
+                i += 1
+        if i == len(y_li) - 1:
             adjust_li.append(y_li[i])
-            i += 2  # 跳过这对数字
-        else:
-            adjust_li.append(y_li[i])
-            i += 1
-    if i == len(y_li) - 1:
-        adjust_li.append(y_li[i])
-    # print(adjust_li)
+        # print(adjust_li)
 
-    # 计算出坐标对
-    '''
-    5个数：1上，2下，3上，4下，5上 / 1下，2上，3下，4上，5下
-    6个数：1下，2上，3下，4上，5下，6上
-    7个数：1上，2下，3上，4下，5上，6下，7上 / 1下，2上，3下，4上，5下，6上，7下
-    8个数：1下，2上，3下，4上，5下，6上，7下，8上
-    '''
-    result = []
-    for i in range(1, len(adjust_li)):
-        if adjust_li[i] - adjust_li[i - 1] > 100:
-            result.append([adjust_li[i - 1], adjust_li[i]])
-            i += 1  # 跳过这对数字
-    return result
+        # 计算出坐标对
+        '''
+        5个数：1上，2下，3上，4下，5上 / 1下，2上，3下，4上，5下
+        6个数：1下，2上，3下，4上，5下，6上
+        7个数：1上，2下，3上，4下，5上，6下，7上 / 1下，2上，3下，4上，5下，6上，7下
+        8个数：1下，2上，3下，4上，5下，6上，7下，8上
+        '''
+        result = []
+        for i in range(1, len(adjust_li)):
+            if adjust_li[i] - adjust_li[i - 1] > 100:
+                result.append([adjust_li[i - 1], adjust_li[i]])
+                i += 1  # 跳过这对数字
+        return result
 
 
 # test
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = PaddleOCR()
-    _screen = _d.screenshot(format="opencv")
-
-    _to_add = ["貪吃鬼"]
-    ll = add_skill(_d, _ocr, _to_add)
-    print(ll)
+    # _screen = _d.screenshot(format="opencv")
+    addskill = AddSkill(_ocr, _d, "setting_1")
+    addskill.run()
     # x = get_box_boundary(_screen)
     # print(x)

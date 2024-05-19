@@ -1,5 +1,6 @@
 from method.recognition.imageMatcher import *
 from method.recognition.textRecognizer import *
+from method.utils import *
 
 
 def in_which_page(screen, ocr, _dir):
@@ -62,8 +63,16 @@ def in_which_page(screen, ocr, _dir):
     # cv2.imwrite("cut" + str(time.time()) + ".png", skill_reset_cropped_image)
     skill_reset_text_recognizer = TextRecognizer(skill_reset_cropped_image, ocr)
     skill_reset_text = skill_reset_text_recognizer.find_text_from_image()
+
     if ("技能" in skill_title_text) and (skill_reset_text == "重置"):
-        return "skill"
+        inherit_cropped_image = screen[406:436, 530:630]
+        inherit_text_recognizer = TextRecognizer(inherit_cropped_image, ocr)
+        inherit_text = inherit_text_recognizer.find_text_from_image()
+        inherit_num = find_numbers_in_string(inherit_text, "rude")
+        if inherit_num < 100:
+            return "skill_add_end"
+        else:
+            return "skill"
 
     # 根据是否出现两个选项马蹄铁图片 判断 当前是否事件界面
     event_green_image = cv2.imread(_dir + "/find/event_green.png")
@@ -124,3 +133,22 @@ def in_which_page(screen, ocr, _dir):
     if fans_require_match:
         return "toy_grab_ok"
 
+    train_end_image = cv2.imread(_dir + "/find/train_end.png")
+    train_end_image_matcher = ImageMatcher(train_end_image, screen)
+    train_end_image_match = train_end_image_matcher.is_part_image_in_box(445, 561, 1065, 1105)
+
+    inherit_cropped_image = screen[1078:1098, 232:289]
+    inherit_text_recognizer = TextRecognizer(inherit_cropped_image, ocr)
+    inherit_text = inherit_text_recognizer.find_text_from_image()
+    inherit_num = find_numbers_in_string(inherit_text, "rude")
+    if train_end_image_match:
+        if inherit_num < 100:
+            return "train_end"
+        else:
+            return "train_end_add_skill"
+
+    fans_require_image = cv2.imread(_dir + "/find/train_end_title.png")
+    fans_require_image_matcher = ImageMatcher(fans_require_image, screen)
+    fans_require_match = fans_require_image_matcher.is_part_image_in_box(292, 428, 394, 434)
+    if fans_require_match:
+        return "train_end_title"

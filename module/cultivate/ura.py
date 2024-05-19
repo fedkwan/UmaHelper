@@ -3,11 +3,13 @@ import importlib
 import uiautomator2 as u2
 import ddddocr
 import onnxruntime as ort
+from paddleocr import PaddleOCR
 
 from method.utils import *
 from module.cultivate.get_in_which_page import *
 from module.cultivate.get_round import *
 from module.cultivate.train import *
+from module.cultivate.add_skill import *
 
 
 class Ura:
@@ -23,6 +25,7 @@ class Ura:
         last_page = ""
         uma_name = "resource.uma_file" + "." + self.uma_name
         uma_model = importlib.import_module(uma_name)
+        _ocr = PaddleOCR()
 
         while True:
 
@@ -163,6 +166,31 @@ class Ura:
                 self.d.click(360, 1180)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
+
+            if page == "train_end":
+                self.d.click(520, 1080)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "train_end_add_skill":
+                self.d.click(200, 1080)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "skill":
+                _ocr = PaddleOCR()
+                addskill = AddSkill(_ocr, d, "setting_1")
+                addskill.run()
+
+            if page == "skill_add_end":
+                self.d.click(80, 1180)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "train_end_title":
+                self.d.click(200, 830)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                break
 
             # 如果都不是以上这些，则进入识图操作
             part_image_file_li = get_png_files(_dir + "/click")
