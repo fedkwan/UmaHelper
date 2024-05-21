@@ -1,3 +1,5 @@
+import numpy as np
+
 from method.recognition.imageMatcher import *
 from method.recognition.textRecognizer import *
 from method.utils import *
@@ -7,7 +9,31 @@ def in_which_page(screen, ocr, _dir):
     # 如果是【游戏登录后】的首页
     # 点进培育
     if np.all(screen[1261, 360] == np.array([247, 159, 28])):
+
+        point_1 = screen[1016, 316]
+        point_2 = screen[1016, 345]
+        point_3 = screen[1016, 375]
+        point_4 = screen[1016, 404]
+        point_green = np.array([24, 222, 156])
+        point_brown = np.array([22, 64, 121])
+        points = [point_1, point_2, point_3, point_4]
+
+        for i, point in enumerate(points):
+            if np.all(point == point_green) and all(np.all(points[j] == point_brown) for j in range(4) if j != i):
+                return "story_" + str(i + 1)
+
+        attribute_point_1 = screen[460, 150]
+        attribute_point_2 = screen[460, 280]
+        attribute_point_3 = screen[460, 410]
+        attribute_point_4 = screen[460, 540]
+        attribute_point_5 = screen[460, 670]
+        attribute_point_green = np.array([36, 217, 121])
+        if np.all(attribute_point_1 == attribute_point_2 == attribute_point_3 == attribute_point_4 == attribute_point_5 == attribute_point_green):
+            return "chose_uma"
+
         return "app_main"
+
+
 
     # 根据技能图标 判断 当前是不是培育主界面
     skill_prat_image = cv2.imread(_dir + "/find/skill.png")

@@ -42,8 +42,17 @@ class Ura:
             time.sleep(DEFAULT_SLEEP_TIME * 2)
 
             if page == "app_main":
-                d.click(550, 1080)
+                self.d.click(550, 1080)
                 time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            story_li = ["story_1", "story_2", "story_3", "story_4"]
+            if page in story_li and page != "story_1":
+                self.d.click(30, 585)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "chose_uma":
                 continue
 
             if page == "main":
