@@ -8,6 +8,7 @@ from method.utils import *
 def in_which_page(screen, ocr, _dir):
     # 如果是【游戏登录后】的首页
     # 点进培育
+    '''
     if np.all(screen[1261, 360] == np.array([247, 159, 28])):
 
         point_1 = screen[1016, 316]
@@ -32,8 +33,7 @@ def in_which_page(screen, ocr, _dir):
             return "chose_uma"
 
         return "app_main"
-
-
+    '''
 
     # 根据技能图标 判断 当前是不是培育主界面
     skill_prat_image = cv2.imread(_dir + "/find/skill.png")

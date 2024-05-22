@@ -7,8 +7,12 @@ schedule 值的含义
 4：Ura
 """
 data = {
-    "name": "oguri_cap",
-    "chinese_name": "小栗帽",
+    "target_scenario": "ura",
+    "uma_name": "oguri_cap",
+    "uma_chinese_name": "小栗帽",
+    "parent_uma_1_rank": 10,
+    "parent_uma_2_rank": 6,
+    "parent_uma_friend_rank": 3,
     "train_benefit": [20, 0, 10, 0, 0],
     "train_target": [800, 600, 600, 200, 200],
     "add_skill_list": ["貪吃鬼", "圓弧藝術家", "曲線的侍酒師"],

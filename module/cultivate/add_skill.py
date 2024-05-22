@@ -50,7 +50,6 @@ class AddSkill:
 
         while True:
 
-            time.sleep(DEFAULT_SLEEP_TIME)
             screen = self.d.screenshot(format="opencv")
 
             cropped_image = screen[406:436, 530:630]
@@ -87,6 +86,8 @@ class AddSkill:
 
             if np.all(screen[1013, 700] == np.array([142, 120, 125])):
                 break
+
+            time.sleep(DEFAULT_SLEEP_TIME)
 
     def scroll_to_top(self):
         while True:
