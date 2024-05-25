@@ -14,15 +14,15 @@ screen = d.screenshot(format="opencv")
 
 
 print(screen.shape)
-cropped_image = screen[677:757, 50:130]
+cropped_image = screen[266:326, 45:130]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
-cropped_image = screen[677:757, 185:265]
+cropped_image = screen[441:501, 45:130]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
-cropped_image = screen[677:757, 320:400]
+cropped_image = screen[616:676, 45:130]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
-cropped_image = screen[677:757, 455:535]
+cropped_image = screen[791:851, 45:130]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
-cropped_image = screen[677:757, 590:670]
+cropped_image = screen[966:1026, 45:130]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
 # text_recognizer = TextRecognizer(cropped_image, ocr)
 # x = text_recognizer.find_text_from_image()
