@@ -53,7 +53,7 @@ def in_which_page(screen: np.array, ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), 
     if np.all(screen[580, 36] == np.array([134, 126, 255])) and np.all(screen[560, 36] == np.array([134, 126, 255])):
         return "competition"
 
-    if np.all(screen[420, 310] == np.array([40, 211, 158])) and np.all(screen[460, 310] == np.array([40, 211, 158])):
+    if np.all(screen[420, 320] == np.array([40, 211, 158])) and np.all(screen[420, 460] == np.array([40, 211, 158])):
         return "skill"
 
     """
