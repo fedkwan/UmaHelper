@@ -1,104 +1,116 @@
 import time
+import os
 import importlib
-import uiautomator2 as u2
+
 import ddddocr
-import onnxruntime as ort
+import uiautomator2 as u2
 from paddleocr import PaddleOCR
 
-from method.utils import *
+from method.base import *
 from module.cultivate.get_in_which_page import *
+from module.cultivate.chose_scenario import *
+from module.cultivate.chose_uma import *
+from module.cultivate.chose_parent_uma import *
+from module.cultivate.chose_support_card import *
 from module.cultivate.get_round import *
+from module.cultivate.get_status import *
 from module.cultivate.train import *
 from module.cultivate.add_skill import *
 
 
 class Ura:
 
-    def __init__(self, ocr: ddddocr.DdddOcr(), d: u2.connect(), uma_name):
-        self.ocr = ocr
+    def __init__(self, d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_file="setting_1"):
+        self.dir = ROOT_DIR + "/resource/cultivate"
         self.d = d
-        self.uma_name = uma_name
-        self.resource_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/resource"
+        self.ocr = ocr
+        self.d_ocr = d_ocr
+        setting_data = importlib.import_module("customer_setting" + "." + setting_file)
+        self.setting_dic = setting_data.data
 
     def run(self):
 
-        last_page = ""
-        uma_name = "resource.uma_file" + "." + self.uma_name
-        uma_model = importlib.import_module(uma_name)
-        _ocr = PaddleOCR()
+        jam_test_point_1, jam_test_point_2 = np.array([255, 255, 255]), np.array([255, 255, 255])
+        last_jam_test_point_1, last_jam_test_point_2 = np.array([255, 255, 255]), np.array([255, 255, 255])
+        jam = False
+        round_temp = -1
 
         while True:
-
             screen = self.d.screenshot(format="opencv")
-            # 定义一下资源文件夹，后面会用到
-            _dir = self.resource_dir + "/cultivate"
 
-            page = in_which_page(screen, self.ocr, _dir)
+            # 卡住了就先不输出
+            last_jam_test_point_1 = jam_test_point_1
+            last_jam_test_point_2 = jam_test_point_2
+            jam_test_point_1 = screen[100, 100]
+            jam_test_point_2 = screen[100, 620]
+            if np.all(jam_test_point_1 == last_jam_test_point_1) and np.all(jam_test_point_2 == last_jam_test_point_2):
+                jam = True
+            else:
+                jam = False
 
-            if page != last_page and page is not None:
+            page = in_which_page(screen, self.ocr, self.d_ocr, jam)
+            if page is not None:
                 print(page)
-                last_page = page
 
-            time.sleep(DEFAULT_SLEEP_TIME * 2)
-
+            # 首页则点击进入育成
             if page == "app_main":
                 self.d.click(550, 1080)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
-            '''
-            story_li = ["story_1", "story_2", "story_3", "story_4"]
-            if page in story_li and page != "story_1":
-                self.d.click(30, 585)
+            if page == "chose_scenario":
+                chose_scenario(self.d, self.setting_dic)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
-            '''
 
             if page == "chose_uma":
+                chose_uma(self.d, self.setting_dic)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "chose_parent_uma":
+                chose_parent_uma(self.d, self.setting_dic)
+                time.sleep(DEFAULT_SLEEP_TIME)
+                continue
+
+            if page == "chose_support_card":
+                chose_support_card(self.d, self.setting_dic)
+                time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
             if page == "main":
+                # 识别不清楚就点开竞赛看
+                if round_temp != -1:
+                    round_num = round_temp
+                else:
+                    round_num = get_round(screen, self.ocr)
+                    if round_num == 2674:
+                        round_num = competition_round_text_to_round_num(self.d, self.ocr)
+                        round_temp = round_num
+                print("round:" + str(round_num))
                 # 历战最重要
-                try:
-                    this_round = get_round(screen, self.ocr)
-                    print(this_round)
-                    print("==========")
-                except Exception as e:
-                    print(e)
-                    continue
-
-                if uma_model.data["schedule"][this_round] in [2, 3, 4]:
+                if self.setting_dic["schedule"][round_num] in [2, 3, 4]:
                     self.d.click(510, 1130)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
                 # 然后是看病，看病不能用自动点击了，否则按照程序的运行逻辑会到最后才运行
-                part_image = cv2.imread(_dir + "/find/clinic.png")
-                image_matcher = ImageMatcher(part_image, screen)
-                match_result = image_matcher.find_part_image_from_total_image()
-                if match_result:
+                sub_image = cv2.imread(self.dir + "/find/clinic.png")
+                image_matcher = ImageHandler()
+                best_match = image_matcher.find_sub_image(sub_image, screen)
+                if best_match:
                     self.d.click(140, 1155)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
-                # 获取体力值
-                cropped_image = screen[161:162, 227:517]
-                i = 0
-                for pixel in cropped_image[0]:
-                    if not np.all(pixel == [117, 117, 117]):
-                        i += 1
-                    else:
-                        break
-                power = round(i / 290 * 100)
-
-                # 获取心情
-                mood_list = [[105, 20, 241], [17, 90, 240], [3, 139, 207], [241, 105, 37], [206, 52, 140]]
-                pixel_color = screen[140, 590].tolist()
-                mood = mood_list.index(pixel_color) if pixel_color in mood_list else 6
-                # 我觉得其实可以不用考虑合宿心情太差
+                # 然后是外出和休息
+                status_dic = get_status(screen)
+                power = status_dic["power"]
+                mood = status_dic["mood"]
+                # 休息和外出（我觉得其实可以不用考虑合宿心情太差
                 camp = [37, 38, 39, 40, 61, 62, 63, 64]
                 if mood > 1 and power < 80:
-                    if this_round in camp:
+                    if round_num in camp:
                         self.d.click(120, 990)
                         time.sleep(DEFAULT_SLEEP_TIME)
                         continue
@@ -110,13 +122,15 @@ class Ura:
                     self.d.click(120, 990)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
+
+                # 都没事，就去训练
                 self.d.click(360, 990)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
             if page == "train":
-                train = Train(self.ocr, self.d, self.uma_name)
-                train.train()
+                round_temp = -1
+                train(self.d, self.ocr, self.d_ocr, self.setting_dic)
                 time.sleep(DEFAULT_SLEEP_TIME * 4)
                 continue
 
@@ -189,8 +203,7 @@ class Ura:
                 continue
 
             if page == "skill":
-                _ocr = PaddleOCR()
-                addskill = AddSkill(_ocr, d, "setting_1")
+                addskill = AddSkill(self.d, self.ocr, self.setting_dic)
                 addskill.run()
 
             if page == "skill_add_end":
@@ -204,48 +217,39 @@ class Ura:
                 break
 
             # 如果都不是以上这些，则进入识图操作
-            part_image_file_li = get_png_files(_dir + "/click")
-            for part_image_file in part_image_file_li:
-                part_image = cv2.imread(_dir + "/click/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
-                if match_result is not None:
-                    print(part_image_file)
-                    point = match_result["result"]
-                    self.d.click(point[0], point[1])
+            sub_image_file_li = get_png_files(self.dir + "/jam")
+            for sub_image_file in sub_image_file_li:
+                sub_image = cv2.imread(self.dir + "/jam/" + sub_image_file)
+                matcher = ImageHandler()
+                best_match = matcher.find_sub_image(sub_image, screen)
+                if best_match is not None:
+                    print(sub_image_file)
+                    print(best_match["result"])
+                    click_x, click_y = best_match["result"]
+                    self.d.click(click_x, click_y)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
             # 如果都不是以上这些，则进入识图操作
-            part_image_file_li = get_png_files(self.resource_dir + "/general")
-            for part_image_file in part_image_file_li:
-                part_image = cv2.imread(self.resource_dir + "/general/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen, 0.7)
-                match_result = matcher.find_part_image_from_total_image()
-                if match_result is not None:
-                    print(part_image_file)
-                    point = match_result["result"]
-                    self.d.click(point[0], point[1])
+            sub_image_file_li = get_png_files(self.dir + "/click")
+            for sub_image_file in sub_image_file_li:
+                sub_image = cv2.imread(self.dir + "/click/" + sub_image_file)
+                matcher = ImageHandler()
+                best_match = matcher.find_sub_image(sub_image, screen, 0.8)
+                if best_match is not None:
+                    print(sub_image_file)
+                    print(best_match["result"])
+                    click_x, click_y = best_match["result"]
+                    self.d.click(click_x, click_y)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
-    """
-    task 有几个类型，识别画面，应当在画面静止1秒以上后再进行识别。
-    一.cultivate
-        1.休息 rest
-        2.训练 train
-        3.技能 skill
-        4.看病 clinic
-        5.外出 hangout
-        6.竞赛 competition
-        7.事件 event
-        8.继承 归类在 jam 里面
-    """
+            time.sleep(DEFAULT_SLEEP_TIME * 4)
 
 
 if __name__ == "__main__":
-    ort.set_default_logger_severity(3)
-    d = u2.connect("127.0.0.1:16384")
-    ocr = ddddocr.DdddOcr()
-    ura = Ura(ocr, d, "oguri_cap")
+    _d = u2.connect("127.0.0.1:16384")
+    _ocr = PaddleOCR(use_angle_cls=True)
+    _d_ocr = ddddocr.DdddOcr()
+    ura = Ura(_d, _ocr, _d_ocr)
     ura.run()

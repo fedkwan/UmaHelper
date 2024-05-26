@@ -1,6 +1,7 @@
 import ddddocr
-from method.recognition.textRecognizer import *
+
 from method.utils import *
+from method.image_handler import *
 
 
 def train_selection_split(arr, index):
@@ -59,8 +60,8 @@ def get_attribute_up_if_train(screen, ocr, selection):
 
     for x_pair in x_single_selection_li:
         cropped_image = screen[780:820, x_pair[0]:x_pair[1]]
-        text_recognizer = TextRecognizer(cropped_image, ocr)
-        attribute_up_number = text_recognizer.find_text_from_image()
+        handler = ImageHandler()
+        attribute_up_number = handler.get_text_from_image_dddd(ocr, cropped_image)
         if is_first_col_contain_orange(cropped_image):
             result_single.append("")
         else:
@@ -70,8 +71,8 @@ def get_attribute_up_if_train(screen, ocr, selection):
 
     for x_pair in x_double_selection_li:
         cropped_image = screen[780:820, x_pair[0]:x_pair[1]]
-        text_recognizer = TextRecognizer(cropped_image, ocr)
-        attribute_up_number = text_recognizer.find_text_from_image()
+        handler = ImageHandler()
+        attribute_up_number = handler.get_text_from_image_dddd(ocr, cropped_image)
         if is_first_col_contain_orange(cropped_image):
             result_double.append("")
         else:
@@ -94,7 +95,6 @@ if __name__ == "__main__":
     # _d = u2.connect("127.0.0.1:16384")
     # _screen = _d.screenshot(format="opencv")
     import cv2
-    import uiautomator2 as u2
 
     _screen = cv2.imread("../../temp.png")
     _ocr = ddddocr.DdddOcr()

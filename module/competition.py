@@ -1,28 +1,30 @@
-from method.recognition.imageMatcher import *
-from method.recognition.textRecognizer import *
-import uiautomator2 as u2
-import ddddocr
 import time
+import datetime
+import importlib
+
+import uiautomator2 as u2
+import cv2
+from paddleocr import PaddleOCR
 import numpy as np
+
+from method.base import *
 from method.utils import *
-import onnxruntime as ort
+from method.image_handler import *
 
 
 class Competition:
-    def __init__(self, ocr: ddddocr.DdddOcr(), d: u2.connect()):
-        self.ocr = ocr
+    def __init__(self, d: u2.connect(), ocr: PaddleOCR(), setting_file="setting_1"):
+        self.dir = ROOT_DIR + "/resource/competition"
         self.d = d
-        self.resource_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/resource"
+        self.ocr = ocr
+        setting_data = importlib.import_module("customer_setting" + "." + setting_file)
+        self.setting_dic = setting_data.data
 
     def competition(self):
 
-        _dir = self.resource_dir + "/competition"
-
         # 进入竞赛首页
         while True:
-
             screen = self.d.screenshot(format="opencv")
-            # 定义一下资源文件夹，后面会用到
 
             # 如果是【游戏登录后】的首页
             # 定位底栏【主页面】蓝色
@@ -32,30 +34,36 @@ class Competition:
                 continue
 
             # 如果是【竞赛】的首页
-            # 用4个方块的底部的灰线上的点的颜色来定位当前页面
-            # 判断是不是每周结算时刻
             gray = np.array([109, 84, 89])
-            _a, _b, _c, _d = screen[950, 320], screen[950, 400], screen[1106, 320], screen[1106, 400]
-            if np.all(_a == _b) and np.all(_b == _c) and np.all(_c == _d) and np.all(_d == gray):
+            # 用4个方块的底部的灰线上的点的颜色来定位当前页面
+            if np.all(screen[950, 320] == gray) and np.all(screen[950, 400] == gray) and np.all(screen[1106, 320] == gray) and np.all(
+                    screen[1106, 400] == gray):
+
+                # 判断是不是每周结算时刻
+                current_time = datetime.datetime.now()
+                is_weekend_midnight = (current_time.weekday() == 0 and current_time.hour < 5)
+
                 # 判断第一格RP点槽是否为灰色，如果不是，说明还有RP点
-                if np.all(screen[65, 430] != np.array([89, 76, 81])) and (is_monday_midnight_to_five() is False):
+                # 如果有RP点，也不是结算时刻，那就先进行队伍竞技场
+                if np.all(screen[65, 430] != np.array([89, 76, 81])) and is_weekend_midnight is False:
                     self.d.click(200, 850)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
+                # 否则前往每日挑战内容
                 else:
                     self.d.click(200, 1050)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
             # 如果是【队伍竞技场】的首页
+            weekend_gray = np.array([70, 52, 57])
             # 用2个方块的底部的灰线上的点的颜色来定位当前页面
-            _e, _f, weekend_gray = screen[875, 360], screen[1015, 360], np.array([70, 52, 57])
-            # 判断是不是每周结算时刻
-            if np.all(_e == weekend_gray) and np.all(_f == gray):
+            # 判断是不是每周结算时刻，是的话返回
+            if np.all(screen[875, 360] == weekend_gray) and np.all(screen[1015, 360] == gray):
                 self.d.click(80, 1080)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
-            if np.all(_e == gray) and np.all(_f == gray):
+            if np.all(screen[875, 360] == gray) and np.all(screen[1015, 360] == gray):
                 # 判断第一格RP点槽是否为灰色，如果不是，说明还有RP点（跟上面重复的，再一次判定）
                 if np.all(screen[65, 430] != np.array([89, 76, 81])):
                     self.d.click(360, 820)
@@ -68,50 +76,50 @@ class Competition:
 
             # 如果是【队伍竞赛】挑选对手的页面
             # 用3个方块的底部的灰线上的点的颜色来定位当前页面
-            _g, _h, _i = screen[476, 360], screen[746, 360], screen[1016, 360]
-            if np.all(_g == _h) and np.all(_h == _i) and np.all(_i == np.array([123, 91, 97])):
-                self.d.click(360, 900)  # 选第3个
-                time.sleep(DEFAULT_SLEEP_TIME)
+            opponent_gray = np.array([123, 91, 97])
+            if np.all(screen[476, 360] == opponent_gray) and np.all(screen[746, 360] == opponent_gray) and np.all(
+                    screen[1016, 360] == opponent_gray):
+                # 默认选第3个对手
+                self.d.click(360, 900)
+                time.sleep(DEFAULT_SLEEP_TIME * 2)
                 continue
 
             # 如果是【每日竞赛内容】的首页
             # 用2个方块的底部的灰线上的点的颜色来定位当前页面
-            _j, _k = screen[1030, 320], screen[1030, 400]
-            if np.all(_j == _k) and np.all(_k == gray):
+            if np.all(screen[1030, 320] == gray) and np.all(screen[1030, 400] == gray):
                 # 先看左边还有没有次数
-                cropped_image = screen[835:855, 280:300]
-                text_recognizer = TextRecognizer(cropped_image, self.ocr)
-                daily_competition_left_times_text = text_recognizer.find_text_from_image()
-                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
+                cropped_image = screen[949:973, 120:300]
+                handler = ImageHandler()
+                daily_competition_status_text = handler.get_text_from_image(self.ocr, cropped_image)
+                if "束" not in daily_competition_status_text:
                     self.d.click(210, 930)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
+
                 # 再看右边有没有次数
-                cropped_image = screen[835:855, 575:595]
-                text_recognizer = TextRecognizer(cropped_image, self.ocr)
-                daily_legend_competition_left_times_text = text_recognizer.find_text_from_image()
-                if daily_legend_competition_left_times_text == "1":
+                cropped_image = screen[949:973, 420:600]
+                handler = ImageHandler()
+                daily_legend_competition_status_text = handler.get_text_from_image(self.ocr, cropped_image)
+                if "束" not in daily_legend_competition_status_text:
                     self.d.click(510, 930)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
+
                 # 如果都没次数，就退出循环了（后续如果要打传奇赛的话这里要改掉）
-                if (daily_competition_left_times_text != "3" and daily_competition_left_times_text != "6") and daily_legend_competition_left_times_text != "1":
+                if "束" in daily_competition_status_text and "束" in daily_legend_competition_status_text:
                     self.d.click(360, 1220)  # 回到首页
                     print("竞赛结束")
                     time.sleep(DEFAULT_SLEEP_TIME)
                     break
 
             # 如果是【每日竞赛】，选择月光赏或者木星杯的页面
-            part_image = cv2.imread(_dir + "/find/daily_competition_main.png")
-            matcher = ImageMatcher(part_image, screen)
-            match_result = matcher.find_part_image_from_total_image()
-            if match_result is not None:
-                cropped_image = screen[11:37, 620:642]
-                text_recognizer = TextRecognizer(cropped_image, self.ocr)
-                daily_competition_left_times_text = text_recognizer.find_text_from_image()
-                print(daily_competition_left_times_text)
+            if np.all(screen[640, 33] == np.array([138, 115, 100])) and np.all(screen[783, 33] == np.array([128, 105, 90])):
+                cropped_image = screen[11:37, 610:690]
+                handler = ImageHandler()
+                daily_competition_left_times_text = handler.get_text_from_image(self.ocr, cropped_image)
                 # 判断是否还有次数，没有次数的话就返回 （这里采用更复杂的逻辑，避免出现循环识图的情况）
-                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
+                if "0" not in daily_competition_left_times_text:
+                    # 选木星杯
                     self.d.click(360, 830)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
@@ -121,17 +129,13 @@ class Competition:
                     continue
 
             # 如果是【每日竞赛】月光赏或者木星杯里面，选择具体难度的页面
-            part_image = cv2.imread(_dir + "/find/daily_competition_top.png")
-            matcher = ImageMatcher(part_image, screen)
-            match_result = matcher.find_part_image_from_total_image()
-            if match_result is not None:
-                cropped_image = screen[11:37, 620:642]
-                text_recognizer = TextRecognizer(cropped_image, self.ocr)
-                daily_competition_left_times_text = text_recognizer.find_text_from_image()
-                print(daily_competition_left_times_text)
+            if np.all(screen[638, 50] == np.array([102, 153, 34])) and np.all(screen[638, 240] == np.array([102, 153, 34])):
+                cropped_image = screen[11:37, 610:690]
+                handler = ImageHandler()
+                daily_competition_left_times_text = handler.get_text_from_image(self.ocr, cropped_image)
                 # 判断是否还有次数，没有次数的话就返回 （这里采用更复杂的逻辑，避免出现循环识图的情况）
-                if daily_competition_left_times_text == "3" or daily_competition_left_times_text == "6":
-                    self.d.click(360, 830)
+                if "0" not in daily_competition_left_times_text:
+                    self.d.click(360, 700)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
                 else:
@@ -140,90 +144,68 @@ class Competition:
                     continue
 
             # 如果在【每日传奇竞赛】选择马娘的页面
-            part_image = cv2.imread(_dir + "/find/daily_legend_competition_main.png")
-            matcher = ImageMatcher(part_image, screen)
-            match_result = matcher.is_part_image_in_box(375 - 10, 640 + 10, 145 - 10, 215 + 10)
-            if match_result:
+            if np.all(screen[430, 360] == np.array([60, 205, 101])) and np.all(screen[460, 360] == np.array([106, 193, 129])):
                 # 向下滑动，直到找到目标马娘为止
-                part_image = cv2.imread(_dir + "/find/qytk.png")
-                temp = TemplateMatching(part_image, screen, threshold=0.9)
-                best_match = temp.find_best_result()
+                sub_image = cv2.imread(self.dir + "/uma_icon/" + self.setting_dic["daily_legend_competition_oppenent_uma"] + ".png")
+                handler = ImageHandler()
+                best_match = handler.find_sub_image(sub_image, screen)
                 if best_match is not None:
-                    center = best_match['result']
-                    self.d.click(center[0], center[1])
+                    click_x, click_y = best_match["result"]
+                    self.d.click(click_x, click_y)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
                 else:
                     self.d.swipe(360, 720, 360, 520)
-                    time.sleep(2)
+                    time.sleep(DEFAULT_SLEEP_TIME * 4)
+                    continue
+
+            # 如果都不是以上这些，则进入识图操作，查找类的需要判断逻辑
+            sub_image_file_li = get_png_files(self.dir + "/find")
+            for sub_image_file in sub_image_file_li:
+                file_name_li = sub_image_file[0:-4].split("-")
+                [click_x, click_y] = list(map(int, file_name_li[0].split(",")))
+                [x0, x1, y0, y1] = list(map(int, file_name_li[1].split(",")))
+                sub_image = cv2.imread(self.dir + "/find/" + sub_image_file)
+                handler = ImageHandler()
+                _match = handler.is_sub_image_in_box(sub_image, screen, x0 - 10, x1 + 10, y0 - 10, y1 + 10)
+                if _match:
+                    print(sub_image_file)
+                    self.d.click(click_x, click_y)
+                    time.sleep(DEFAULT_SLEEP_TIME)
+                    continue
+
+            # 如果都不是以上这些，则进入识图操作，点击类的不存在判断逻辑
+            sub_image_file_li = get_png_files(self.dir + "/click")
+            for sub_image_file in sub_image_file_li:
+                sub_image = cv2.imread(self.dir + "/click/" + sub_image_file)
+                handler = ImageHandler()
+                best_match = handler.find_sub_image(sub_image, screen)
+                if best_match is not None:
+                    print(sub_image_file)
+                    print(best_match["result"])
+                    click_x, click_y = best_match["result"]
+                    self.d.click(click_x, click_y)
+                    time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
             # 如果是胜利结算出现【Tap】字样的页面
-            cropped_image = screen[1060:1120, 310:410]
-            text_recognizer = TextRecognizer(cropped_image, self.ocr)
-            k = text_recognizer.find_text_from_image()
+            cropped_image_1 = screen[1060:1120, 310:410]
+            cropped_image_2 = screen[1040:1075, 310:410]
+            handler = ImageHandler()
+            k = handler.get_text_from_image(self.ocr, cropped_image_1)
             if k.lower() == "tap":
                 self.d.click(360, 1110)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
-
-            # 如果是胜利结算出现【Tap】字样的页面
-            cropped_image = screen[1040:1075, 310:410]
-            text_recognizer = TextRecognizer(cropped_image, self.ocr)
-            k = text_recognizer.find_text_from_image()
+            k = handler.get_text_from_image(self.ocr, cropped_image_2)
             if k.lower() == "tap":
                 self.d.click(360, 1050)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
-            # 如果都不是以上这些，则进入识图操作
-            part_image_file_li = get_png_files(_dir)
-            for part_image_file in part_image_file_li:
-                file_name_li = part_image_file[0:-4].split("-")
-                [click_x, click_y] = list(map(int, file_name_li[0].split(",")))
-                [x0, x1, y0, y1] = list(map(int, file_name_li[1].split(",")))
-
-                part_image = cv2.imread(_dir + "/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.is_part_image_in_box(x0 - 10, x1 + 10, y0 - 10, y1 + 10)
-                if match_result:
-                    print(part_image_file)
-                    self.d.click(click_x, click_y)
-                    time.sleep(DEFAULT_SLEEP_TIME)
-                    continue
-
-            # 如果都不是以上这些，则进入识图操作
-            part_image_file_li = get_png_files(self.resource_dir + "/general")
-            for part_image_file in part_image_file_li:
-                part_image = cv2.imread(self.resource_dir + "/general/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen, 0.7)
-                match_result = matcher.find_part_image_from_total_image()
-                if match_result is not None:
-                    print(part_image_file)
-                    print(match_result)
-                    point = match_result["result"]
-                    self.d.click(point[0], point[1])
-                    time.sleep(DEFAULT_SLEEP_TIME)
-                    continue
-
-            # 如果都不是以上这些，则进入识图操作
-            part_image_file_li = get_png_files(_dir + "/click")
-            for part_image_file in part_image_file_li:
-                part_image = cv2.imread(_dir + "/click/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
-                if match_result is not None:
-                    print(part_image_file)
-                    print(match_result)
-                    point = match_result["result"]
-                    self.d.click(point[0], point[1])
-                    time.sleep(DEFAULT_SLEEP_TIME)
-                    continue
-
 
 if __name__ == "__main__":
-    ort.set_default_logger_severity(3)
-    d = u2.connect("127.0.0.1:16384")
-    ocr = ddddocr.DdddOcr()
-    competition = Competition(ocr, d)
+    _d = u2.connect("127.0.0.1:16384")
+    _ocr = PaddleOCR(use_angle_cls=True)
+    competition = Competition(_d, _ocr)
     competition.competition()

@@ -1,9 +1,8 @@
-from method.recognition.imageMatcher import *
-from method.recognition.textRecognizer import *
+from method.image_handler import *
+from method.text_handler import *
 import uiautomator2 as u2
 import ddddocr
 import time
-import numpy as np
 from method.utils import *
 import onnxruntime as ort
 

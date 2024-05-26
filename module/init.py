@@ -1,9 +1,7 @@
-import time
 import uiautomator2 as u2
 import psutil
 import subprocess
-import numpy as np
-from method.recognition.imageMatcher import *
+from method.image_handler import *
 from method.utils import *
 
 

@@ -1,31 +1,21 @@
 import time
-
-import cv2
-import uiautomator2 as u2
-import numpy as np
-import logging
 import importlib
 
+import uiautomator2 as u2
 from paddleocr import PaddleOCR
 
-from method.recognition.textRecognizer import *
-from method.textSimilarity import *
-from module.cultivate.skill_dic import *
+from method.base import *
 from method.utils import *
-
-
-__author__ = "user"
-logger = logging.getLogger("ppocr")
-logger.setLevel(logging.ERROR)
+from method.text_handler import *
+from module.cultivate.skill_dic import *
 
 
 class AddSkill:
 
-    def __init__(self, ocr: PaddleOCR(), d: u2.connect(), setting_file):
-        self.ocr = ocr
+    def __init__(self, d: u2.connect(), ocr: PaddleOCR(), setting_dic: dict):
         self.d = d
-        setting_data = importlib.import_module("customer_setting" + "." + setting_file)
-        self.setting_dic = setting_data.data
+        self.ocr = ocr
+        self.setting_dic = setting_dic
 
     def run(self):
 
@@ -49,7 +39,6 @@ class AddSkill:
     def add_skill(self, step):
 
         while True:
-
             screen = self.d.screenshot(format="opencv")
 
             cropped_image = screen[406:436, 530:630]
@@ -67,7 +56,8 @@ class AddSkill:
                 # 识别技能名
                 result = self.ocr.ocr(cropped_image)[0]
                 ocred_skill_text = "".join(r[1][0] for r in result)
-                most_similar_string = find_most_similar_string(ocred_skill_text, skill_dic_combine_name_and_description)
+                handler = TextHandler()
+                most_similar_string = handler.find_most_similar_str(ocred_skill_text, skill_dic_combine_name_and_description)
                 skill_text = skill_dic_combine_name_and_description_reversal[most_similar_string]
                 print(skill_text)
 
@@ -142,8 +132,6 @@ class AddSkill:
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = PaddleOCR()
-    # _screen = _d.screenshot(format="opencv")
-    addskill = AddSkill(_ocr, _d, "setting_1")
-    addskill.run()
-    # x = get_box_boundary(_screen)
-    # print(x)
+    _setting_dic = importlib.import_module("customer_setting.setting_1").data
+    _addskill = AddSkill(_ocr, _d, _setting_dic)
+    _addskill.run()

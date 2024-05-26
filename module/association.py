@@ -1,9 +1,8 @@
-from method.recognition.imageMatcher import *
-from method.recognition.textRecognizer import *
+from method.image_handler import *
+from method.text_handler import *
 import uiautomator2 as u2
 import ddddocr
 import time
-import numpy as np
 from method.utils import *
 import onnxruntime as ort
 
@@ -30,16 +29,16 @@ class Association:
             # 判断是否完成捐赠 后发先至
             if give_status != 1:
                 part_image = cv2.imread(_dir + "/find/give_done.png")
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result:
                     give_status = 1
                     continue
 
             if give_status != 1:
                 part_image = cv2.imread(_dir + "/find/shoes_give.png")
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result is not None:
                     point = match_result["result"]
                     self.d.click(point[0], point[1])
@@ -49,8 +48,8 @@ class Association:
             # 判断是否完成请求
             if request_status != 1:
                 part_image = cv2.imread(_dir + "/find/request_title.png")
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result:
                     if np.all(screen[312, 620] == np.array([100, 100, 100])):
                         request_status = 1
@@ -58,8 +57,8 @@ class Association:
 
             if request_status != 1:
                 part_image = cv2.imread(_dir + "/find/request_done.png")
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result is not None:
                     point = match_result["result"]
                     self.d.click(point[0], point[1])
@@ -70,8 +69,8 @@ class Association:
             part_image_file_li = get_png_files(_dir + "/click")
             for part_image_file in part_image_file_li:
                 part_image = cv2.imread(_dir + "/click/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result is not None:
                     print(part_image_file)
                     point = match_result["result"]
@@ -83,8 +82,8 @@ class Association:
             part_image_file_li = get_png_files(self.resource_dir + "/general")
             for part_image_file in part_image_file_li:
                 part_image = cv2.imread(self.resource_dir + "/general/" + part_image_file)
-                matcher = ImageMatcher(part_image, screen, 0.7)
-                match_result = matcher.find_part_image_from_total_image()
+                handler = ImageMatcher(part_image, screen, 0.7)
+                match_result = handler.find_part_image_from_total_image()
                 if match_result is not None:
                     print(part_image_file)
                     point = match_result["result"]
