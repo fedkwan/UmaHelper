@@ -16,7 +16,7 @@ data = {
     "support_card_png_name": "200px-Support_thumb_30078.png",
     "train_benefit": [20, 0, 10, 0, 0],
     "train_target": [800, 600, 600, 200, 200],
-    "add_skill_list": ["貪吃鬼", "圓弧藝術家", "曲線的侍酒師"],
+    "add_skill_list": ["貪吃鬼", "圓弧的藝術家", "曲線的侍酒師"],
     "add_skill_running_style": "前列",
     "add_skill_running_distance": "中距離",
     "schedule": {
