@@ -244,8 +244,6 @@ class Ura:
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
-            time.sleep(DEFAULT_SLEEP_TIME * 4)
-
 
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")

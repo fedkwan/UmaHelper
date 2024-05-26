@@ -20,11 +20,12 @@ def get_round(screen: np.array, ocr: PaddleOCR()) -> int:
 
 def round_text_to_round_num(round_text: str) -> int:
     round_text = round_text.replace(" ", "")  # 去除空格
+    print(round_text)
     round_num, year, month, half = 99, 99, 99, 99
     if "手" in round_text:
         year = 0
         if "出" in round_text:
-            return 0
+            return 1
         else:
             month = find_numbers_in_string(round_text) - 1
             half = 0 if "前" in round_text else 1
@@ -36,11 +37,14 @@ def round_text_to_round_num(round_text: str) -> int:
         year = 2
         month = find_numbers_in_string(round_text) - 1
         half = 0 if "前" in round_text else 1
+    elif "系" in round_text:
+        return 1
     round_num = 2 * (12 * year + month) + half + 1  # 如果都是99，说明识别出问题了，这里会是 2674
     return round_num
 
 
 def competition_round_text_to_round_num(d: u2.connect(), ocr: PaddleOCR()) -> [str, int]:
+    print("看不清楚回合数！")
     while True:
         screen = d.screenshot(format="opencv")
 
@@ -55,6 +59,7 @@ def competition_round_text_to_round_num(d: u2.connect(), ocr: PaddleOCR()) -> [s
             cropped_image = screen[625:675, 220:500]
             handler = ImageHandler()
             round_text = handler.get_text_from_image(ocr, cropped_image)
+            print(round_text)
             round_num = round_text_to_round_num(round_text)
             d.click(90, 1230)
             time.sleep(DEFAULT_SLEEP_TIME)

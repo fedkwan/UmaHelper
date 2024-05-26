@@ -50,35 +50,6 @@ def in_which_page(screen: np.array, ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), 
     if train_type_text in train_type_li:
         return "train"
 
-    """
-
-    # 根据是否有行程表的文字 或者 是否出现了左或右标志 判断 当前是不是竞赛界面
-
-    competition_cropped_image = screen[1065:1095, 540:660]
-    competition_text_recognizer = TextRecognizer(competition_cropped_image, ocr)
-    competition_schedule_str = competition_text_recognizer.find_text_from_image()
-    print(competition_schedule_str)
-    term1 = "行程表" in competition_schedule_str
-
-    competition_prev_image = cv2.imread(_dir + "/find/competition_prev.png")
-    competition_next_image = cv2.imread(_dir + "/find/competition_next.png")
-    competition_prev_image_matcher = ImageMatcher(competition_prev_image, screen)
-    competition_next_image_matcher = ImageMatcher(competition_next_image, screen)
-    competition_prev_match = competition_prev_image_matcher.is_part_image_in_box(70, 160, 600, 690)
-    competition_next_match = competition_next_image_matcher.is_part_image_in_box(560, 650, 600, 690)
-
-    cropped_image = screen[920:943, 220:460]
-    # cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
-    text_recognizer = TextRecognizer(cropped_image, ocr)
-    x = text_recognizer.find_text_from_image()
-
-    if competition_prev_match or competition_next_match:
-        if "以外的" in x:
-            return "competition_set_select"
-        else:
-            return "competition"
-            # 应该是一步步点击
-    """
     if np.all(screen[580, 36] == np.array([134, 126, 255])) and np.all(screen[560, 36] == np.array([134, 126, 255])):
         return "competition"
 
@@ -119,7 +90,7 @@ def in_which_page(screen: np.array, ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), 
 
     cropped_image = screen[1040:1075, 310:410]
     handler = ImageHandler()
-    k = handler.get_text_from_image(ocr, cropped_image)
+    k = handler.get_text_from_image_dddd(d_ocr, cropped_image)
     if k.lower() == "tap":
         return "competition_result"
 
