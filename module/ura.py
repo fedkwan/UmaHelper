@@ -16,6 +16,7 @@ from module.cultivate.get_round import *
 from module.cultivate.get_status import *
 from module.cultivate.train import *
 from module.cultivate.add_skill import *
+from module.cultivate.after_cultivate import *
 
 
 class Ura:
@@ -196,24 +197,10 @@ class Ura:
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
-            if page == "train_end_add_skill":
-                self.d.click(200, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "skill":
-                add_skill = AddSkill(self.d, self.p_ocr, self.setting_dic)
-                add_skill.run()
-
-            if page == "skill_add_end":
-                self.d.click(80, 1180)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
 
             if page == "train_end_title":
-                self.d.click(200, 830)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                break
+                after_cultivate(self.d, self.ocr, self.p_ocr, self.setting_dic)
+                
 
             # 如果都不是以上这些，则进入识图操作
             sub_image_file_li = get_png_files(self.dir + "/jam")

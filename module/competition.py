@@ -236,7 +236,7 @@ class Competition:
                     self.d.click(click_x, click_y)
                     #
                     if "ok" in sub_image_file:
-                        time.sleep(DEFAULT_SLEEP_TIME * 3)
+                        time.sleep(DEFAULT_SLEEP_TIME * 10)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 

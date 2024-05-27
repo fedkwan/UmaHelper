@@ -22,7 +22,7 @@ def round_text_to_round_num(round_text: str) -> int:
     round_text = round_text.replace(" ", "")  # 去除空格
     print(round_text)
     round_num, year, month, half = 99, 99, 99, 99
-    if "手" in round_text:
+    if "新" in round_text or "手" in round_text:
         year = 0
         if "出" in round_text:
             return 1

@@ -12,7 +12,7 @@ from module.cultivate.skill_dic import *
 
 class AddSkill:
 
-    def __init__(self, d: u2.connect(), ocr: PaddleOCR(), setting_dic: dict):
+    def __init__(self, d: u2.connect, ocr: PaddleOCR, setting_dic: dict):
         self.d = d
         self.ocr = ocr
         self.setting_dic = setting_dic
@@ -51,14 +51,18 @@ class AddSkill:
 
             boundary_li = self.get_box_boundary(self, screen)
             for g in boundary_li:
-                cropped_image = screen[g[0]:g[0] + 155, 138:483]
+                cropped_image = screen[g[0] : g[0] + 155, 138:483]
 
                 # 识别技能名
                 result = self.ocr.ocr(cropped_image)[0]
                 ocred_skill_text = "".join(r[1][0] for r in result)
                 handler = TextHandler()
-                most_similar_string = handler.find_most_similar_str(ocred_skill_text, skill_dic_combine_name_and_description)
-                skill_text = skill_dic_combine_name_and_description_reversal[most_similar_string]
+                most_similar_string = handler.find_most_similar_str(
+                    ocred_skill_text, skill_dic_combine_name_and_description
+                )
+                skill_text = skill_dic_combine_name_and_description_reversal[
+                    most_similar_string
+                ]
                 print(skill_text)
 
                 if step == 1:
@@ -66,7 +70,10 @@ class AddSkill:
                         self.d.click(650, g[0] + 75)
                         continue
                 if step == 2:
-                    if self.setting_dic["add_skill_running_style"] in skill_text or self.setting_dic["add_skill_running_distance"] in skill_text:
+                    if (
+                        self.setting_dic["add_skill_running_style"] in skill_text
+                        or self.setting_dic["add_skill_running_distance"] in skill_text
+                    ):
                         self.d.click(650, g[0] + 75)
                         continue
                 if step == 3:
@@ -93,8 +100,10 @@ class AddSkill:
         y_li = []
         y = 472  # 472 到 1028 是技能列表的范围
         while y < 1028:
-            # 灰色或者金色边界，如果改了UI就要重新适配颜色咯
-            if np.all(screen[y, 360] == np.array([210, 193, 193])) or np.all(screen[y, 360] == np.array([57, 193, 255])):
+            # 灰色或者金色边界，如果改了UI就要重新适配颜色
+            if np.all(screen[y, 360] == np.array([210, 193, 193])) or np.all(
+                screen[y, 360] == np.array([57, 193, 255])
+            ):
                 y_li.append(y)
             y += 1
         # print(y_li)
@@ -114,12 +123,12 @@ class AddSkill:
         # print(adjust_li)
 
         # 计算出坐标对
-        '''
+        """
         5个数：1上，2下，3上，4下，5上 / 1下，2上，3下，4上，5下
         6个数：1下，2上，3下，4上，5下，6上
         7个数：1上，2下，3上，4下，5上，6下，7上 / 1下，2上，3下，4上，5下，6上，7下
         8个数：1下，2上，3下，4上，5下，6上，7下，8上
-        '''
+        """
         result = []
         for i in range(1, len(adjust_li)):
             if adjust_li[i] - adjust_li[i - 1] > 100:

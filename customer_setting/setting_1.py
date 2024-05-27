@@ -8,8 +8,8 @@ schedule 值的含义
 """
 data = {
     "target_scenario": "ura",
-    "uma_name": "daiwa_scarlet",
-    "uma_chinese_name": "大和赤驥",
+    "uma_name": "oguri_cap",
+    "uma_chinese_name": "小栗帽",
     "parent_uma_rank_1": 10,
     "parent_uma_rank_2": 6,
     "parent_uma_rank_friend": 3,
