@@ -9,7 +9,7 @@ from method.image_handler import *
 logging.getLogger("airtest").setLevel(logging.ERROR)
 
 
-def get_round(screen: np.array, ocr: PaddleOCR()) -> int:
+def get_round(screen: np.array, ocr: PaddleOCR) -> int:
     # round
     cropped_image = screen[44:64, 15:150]
     handler = ImageHandler()
@@ -43,7 +43,7 @@ def round_text_to_round_num(round_text: str) -> int:
     return round_num
 
 
-def competition_round_text_to_round_num(d: u2.connect(), ocr: PaddleOCR()) -> [str, int]:
+def competition_round_text_to_round_num(d: u2.connect, ocr: PaddleOCR) -> [str, int]:
     print("看不清楚回合数！")
     while True:
         screen = d.screenshot(format="opencv")
@@ -82,5 +82,4 @@ def find_numbers_in_string(string, model="stable"):
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = PaddleOCR(use_angle_cls=True)
-    _d_ocr = ddddocr.DdddOcr()
-    get_round_and_status(_d, _ocr)
+    get_round(_d, _ocr)

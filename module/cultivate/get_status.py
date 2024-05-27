@@ -34,5 +34,5 @@ def get_status(screen: np.array) -> dict:
 # test
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
-    _result = get_round_and_status(_d)
+    _result = get_status(_d)
     print(_result)

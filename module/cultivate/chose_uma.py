@@ -7,7 +7,7 @@ from method.utils import *
 from method.image_handler import *
 
 
-def chose_uma(d: u2.connect(), setting_dic: dict):
+def chose_uma(d: u2.connect, setting_dic: dict):
 
     uma_name = setting_dic["uma_name"]
     icon_dir = ROOT_DIR + "/resource/icon"
@@ -18,7 +18,7 @@ def chose_uma(d: u2.connect(), setting_dic: dict):
     while True:
         screen = d.screenshot(format="opencv")
         handler = ImageHandler()
-        best_match = handler.find_sub_image(sub_image, screen)
+        best_match = handler.find_sub_image(sub_image, screen, 0.7)
         if best_match is not None:
             click_x, click_y = best_match["result"]
             d.click(click_x, click_y)
@@ -31,7 +31,7 @@ def chose_uma(d: u2.connect(), setting_dic: dict):
             time.sleep(DEFAULT_SLEEP_TIME)
 
 
-def scroll_to_top(d: u2.connect()):
+def scroll_to_top(d: u2.connect):
     while True:
         screen = d.screenshot(format="opencv")
         if np.all(screen[655, 695] == np.array([142, 120, 125])):

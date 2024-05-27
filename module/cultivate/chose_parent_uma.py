@@ -7,7 +7,7 @@ from method.utils import *
 from method.image_handler import *
 
 
-def chose_parent_uma(d: u2.connect(), setting_dic: dict):
+def chose_parent_uma(d: u2.connect, setting_dic: dict):
     uma_rank_1 = setting_dic["parent_uma_rank_1"]
     uma_rank_2 = setting_dic["parent_uma_rank_2"]
     uma_rank_friend = setting_dic["parent_uma_rank_friend"]

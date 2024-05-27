@@ -7,7 +7,7 @@ from method.base import *
 from method.utils import *
 
 
-def chose_scenario(d: u2.connect(), setting_dic: dict):
+def chose_scenario(d: u2.connect, setting_dic: dict):
     target_scenario = setting_dic["target_scenario"]
     scenario_to_x_dic = {
         "ura": 316,

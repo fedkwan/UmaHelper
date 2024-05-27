@@ -61,7 +61,7 @@ def get_attribute_up_if_train(screen, ocr, selection):
     for x_pair in x_single_selection_li:
         cropped_image = screen[780:820, x_pair[0]:x_pair[1]]
         handler = ImageHandler()
-        attribute_up_number = handler.get_text_from_image_dddd(ocr, cropped_image)
+        attribute_up_number = handler.get_text_from_image(ocr, cropped_image)
         if is_first_col_contain_orange(cropped_image):
             result_single.append("")
         else:
@@ -72,7 +72,7 @@ def get_attribute_up_if_train(screen, ocr, selection):
     for x_pair in x_double_selection_li:
         cropped_image = screen[780:820, x_pair[0]:x_pair[1]]
         handler = ImageHandler()
-        attribute_up_number = handler.get_text_from_image_dddd(ocr, cropped_image)
+        attribute_up_number = handler.get_text_from_image(ocr, cropped_image)
         if is_first_col_contain_orange(cropped_image):
             result_double.append("")
         else:

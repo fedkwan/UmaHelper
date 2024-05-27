@@ -8,8 +8,8 @@ schedule 值的含义
 """
 data = {
     "target_scenario": "ura",
-    "uma_name": "oguri_cap",
-    "uma_chinese_name": "小栗帽",
+    "uma_name": "daiwa_scarlet",
+    "uma_chinese_name": "大和赤驥",
     "parent_uma_rank_1": 10,
     "parent_uma_rank_2": 6,
     "parent_uma_rank_friend": 3,
@@ -28,5 +28,5 @@ data = {
         61: 0, 62: 0, 63: 0, 64: 0, 65: 0, 66: 0, 67: 0, 68: 1, 69: 0, 70: 3, 71: 0, 72: 1,
         73: 0, 74: 4, 75: 0, 76: 4, 77: 0, 78: 4, 2674: 0
     },
-    "daily_legend_competition_oppenent_uma": "qytk"
+    "daily_legend_competition_opponent_uma": "qytk"
 }

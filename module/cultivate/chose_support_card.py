@@ -7,7 +7,7 @@ from method.utils import *
 from method.image_handler import *
 
 
-def chose_support_card(d: u2.connect(), setting_dic: dict):
+def chose_support_card(d: u2.connect, setting_dic: dict):
     support_card_name = setting_dic["support_card_png_name"]
     png_path = ROOT_DIR + "/resource/support_card/" + support_card_name
     sub_image = cv2.imread(png_path)

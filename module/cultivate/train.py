@@ -12,11 +12,11 @@ train_index_dic = {
 }
 
 
-def train(d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_dic: dict):
+def train(d: u2.connect, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR, setting_dic: dict):
     screen = d.screenshot(format="opencv")
 
     # 获取当前五维
-    attribute_li = get_attribute(d_ocr, screen)
+    attribute_li = get_attribute(ocr, screen)
     print(attribute_li)
     train_target = setting_dic["train_target"]
     np_train_gap_li = np.subtract(np.array(attribute_li), np.array(train_target))
@@ -41,7 +41,7 @@ def train(d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_d
     chose_selection_dictionary = {}
     # 如果点进去这个正好是需要训练的，那就先看
     if train_index in train_selection_li:
-        result_li = get_attribute_up_if_train(screen, d_ocr, train_index)
+        result_li = get_attribute_up_if_train(screen, ocr, train_index)
         chose_selection_dictionary[100 + train_index * 130] = sum(result_li)
         train_selection_li.remove(train_index)
     print(train_selection_li)
@@ -52,7 +52,7 @@ def train(d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_d
         d.click(x, 1080)
         time.sleep(0.3)
         _screen_image = d.screenshot(format="opencv")
-        result_li = get_attribute_up_if_train(_screen_image, d_ocr, selection)
+        result_li = get_attribute_up_if_train(_screen_image, ocr, selection)
         chose_selection_dictionary[x] = sum(result_li)
     print(chose_selection_dictionary)
 
@@ -67,7 +67,7 @@ def train(d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_d
 # test
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
-    _ocr = PaddleOCR(use_angle_cls=True)
-    _d_ocr = ddddocr.DdddOcr()
+    _ocr = ddddocr.DdddOcr()
+    _p_ocr = PaddleOCR(use_angle_cls=True)
     _setting_dic = importlib.import_module("customer_setting.setting_1").data
-    train(_d, _ocr, _d_ocr, _setting_dic)
+    train(_d, _ocr, _p_ocr, _setting_dic)

@@ -1,16 +1,18 @@
 from typing import Any
 
 from airtest.aircv.template_matching import *
-from paddleocr import PaddleOCR
 import ddddocr
+from paddleocr import PaddleOCR
 import numpy as np
 
 
 class ImageHandler:
 
+    # airtest 识图
     @staticmethod
-    def find_sub_image(small_image: np.array, big_image: np.array, threshold: float = 0.9) -> dict[str, Any] | None:
-        # airtest 识图
+    def find_sub_image(
+        small_image: np.array, big_image: np.array, threshold: float = 0.9
+    ) -> dict[str, Any] | None:
         temp = TemplateMatching(small_image, big_image, threshold)
         best_match = temp.find_best_result()
         if best_match is not None:
@@ -18,17 +20,34 @@ class ImageHandler:
         return None
 
     @staticmethod
-    def is_sub_image_in_box(small_image: np.array, big_image: np.array, x0: int, x1: int, y0: int, y1: int, threshold: float = 0.9) -> bool:
+    def is_sub_image_in_box(
+        small_image: np.array,
+        big_image: np.array,
+        x0: int,
+        x1: int,
+        y0: int,
+        y1: int,
+        threshold: float = 0.9,
+    ) -> bool:
         temp = TemplateMatching(small_image, big_image, threshold)
         best_match = temp.find_best_result()
         if best_match is not None:
-            center = best_match['result']
+            center = best_match["result"]
             if x0 < center[0] < x1 and y0 < center[1] < y1:
                 return True
         return False
 
     @staticmethod
-    def get_text_from_image(ocr: PaddleOCR(), image: np.array) -> str:
+    def get_text_from_image(ocr: ddddocr.DdddOcr, image: np.array) -> str:
+        try:
+            _, image_encode = cv2.imencode(".png", image)
+            result = ocr.classification(image_encode.tobytes())
+            return result
+        except Exception as e:
+            return str(e)
+
+    @staticmethod
+    def get_text_from_image_paddle(ocr: PaddleOCR, image: np.array) -> str:
         try:
             result = ocr.ocr(image)[0]
             _ = []
@@ -38,18 +57,11 @@ class ImageHandler:
         except Exception as e:
             return str(e)
 
-    @staticmethod
-    def get_text_from_image_dddd(ocr: ddddocr.DdddOcr(), image: np.array) -> str:
-        try:
-            _, image_encode = cv2.imencode('.png', image)
-            result = ocr.classification(image_encode.tobytes())
-            return result
-        except Exception as e:
-            return str(e)
-
     # 计算两个颜色是否接近，请使用 B,G,R 顺序
     @staticmethod
-    def count_color_diff(point_bgr_1: list, point_bgr_2: list, tolerance: int = 10) -> bool:
+    def count_color_diff(
+        point_bgr_1: list, point_bgr_2: list, tolerance: int = 10
+    ) -> bool:
         distance = np.sqrt(np.sum((np.array(point_bgr_1) - np.array(point_bgr_2)) ** 2))
         print(distance)
         return distance < tolerance

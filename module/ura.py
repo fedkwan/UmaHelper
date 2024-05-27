@@ -20,35 +20,31 @@ from module.cultivate.add_skill import *
 
 class Ura:
 
-    def __init__(self, d: u2.connect(), ocr: PaddleOCR(), d_ocr: ddddocr.DdddOcr(), setting_file="setting_1"):
+    def __init__(
+        self,
+        d: u2.connect,
+        ocr: ddddocr.DdddOcr,
+        p_ocr: PaddleOCR,
+        setting_file="setting_1",
+    ):
         self.dir = ROOT_DIR + "/resource/cultivate"
         self.d = d
         self.ocr = ocr
-        self.d_ocr = d_ocr
+        self.p_ocr = p_ocr
         setting_data = importlib.import_module("customer_setting" + "." + setting_file)
         self.setting_dic = setting_data.data
 
+    def pre_cultivate(self):
+        screen = self.d.screenshot(format="opencv")
+
     def run(self):
 
-        jam_test_point_1, jam_test_point_2 = np.array([255, 255, 255]), np.array([255, 255, 255])
-        last_jam_test_point_1, last_jam_test_point_2 = np.array([255, 255, 255]), np.array([255, 255, 255])
-        jam = False
         round_temp = -1
 
         while True:
             screen = self.d.screenshot(format="opencv")
 
-            # 卡住了就先不输出
-            last_jam_test_point_1 = jam_test_point_1
-            last_jam_test_point_2 = jam_test_point_2
-            jam_test_point_1 = screen[100, 100]
-            jam_test_point_2 = screen[100, 620]
-            if np.all(jam_test_point_1 == last_jam_test_point_1) and np.all(jam_test_point_2 == last_jam_test_point_2):
-                jam = True
-            else:
-                jam = False
-
-            page = in_which_page(screen, self.ocr, self.d_ocr, jam)
+            page = in_which_page(screen, self.ocr, self.p_ocr)
             if page is not None:
                 print(page)
 
@@ -83,9 +79,12 @@ class Ura:
                 if round_temp != -1:
                     round_num = round_temp
                 else:
-                    round_num = get_round(screen, self.ocr)
+                    round_num = get_round(screen, self.p_ocr)
+                    print(round_num)
                     if round_num == 2674:
-                        round_num = competition_round_text_to_round_num(self.d, self.ocr)
+                        round_num = competition_round_text_to_round_num(
+                            self.d, self.p_ocr
+                        )
                         round_temp = round_num
                 print("round:" + str(round_num))
                 # 历战最重要
@@ -130,7 +129,7 @@ class Ura:
 
             if page == "train":
                 round_temp = -1
-                train(self.d, self.ocr, self.d_ocr, self.setting_dic)
+                train(self.d, self.ocr, self.p_ocr, self.setting_dic)
                 time.sleep(DEFAULT_SLEEP_TIME * 4)
                 continue
 
@@ -203,8 +202,8 @@ class Ura:
                 continue
 
             if page == "skill":
-                addskill = AddSkill(self.d, self.ocr, self.setting_dic)
-                addskill.run()
+                add_skill = AddSkill(self.d, self.p_ocr, self.setting_dic)
+                add_skill.run()
 
             if page == "skill_add_end":
                 self.d.click(80, 1180)
@@ -247,7 +246,8 @@ class Ura:
 
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
-    _ocr = PaddleOCR(use_angle_cls=True)
-    _d_ocr = ddddocr.DdddOcr()
-    ura = Ura(_d, _ocr, _d_ocr)
+    _ocr = ddddocr.DdddOcr()
+    _p_ocr = PaddleOCR(use_angle_cls=True)
+    ura = Ura(_d, _ocr, _p_ocr)
+    ura.pre_cultivate()
     ura.run()
