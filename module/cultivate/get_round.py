@@ -13,7 +13,7 @@ def get_round(screen: np.array, ocr: PaddleOCR) -> int:
     # round
     cropped_image = screen[44:64, 15:150]
     handler = ImageHandler()
-    round_text = handler.get_text_from_image(ocr, cropped_image)
+    round_text = handler.get_text_from_image_paddle(ocr, cropped_image)
     round_num = round_text_to_round_num(round_text)
     return round_num
 
@@ -43,7 +43,7 @@ def round_text_to_round_num(round_text: str) -> int:
     return round_num
 
 
-def competition_round_text_to_round_num(d: u2.connect, ocr: PaddleOCR) -> [str, int]:
+def competition_round_text_to_round_num(d: u2.connect, ocr: PaddleOCR) -> int:
     print("看不清楚回合数！")
     while True:
         screen = d.screenshot(format="opencv")
@@ -58,7 +58,7 @@ def competition_round_text_to_round_num(d: u2.connect, ocr: PaddleOCR) -> [str, 
         if np.all(screen[580, 36] == np.array([134, 126, 255])) and np.all(screen[560, 36] == np.array([134, 126, 255])):
             cropped_image = screen[625:675, 220:500]
             handler = ImageHandler()
-            round_text = handler.get_text_from_image(ocr, cropped_image)
+            round_text = handler.get_text_from_image_paddle(ocr, cropped_image)
             print(round_text)
             round_num = round_text_to_round_num(round_text)
             d.click(90, 1230)
@@ -81,5 +81,6 @@ def find_numbers_in_string(string, model="stable"):
 # test
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
+    _screen = _d.screenshot(format="opencv")
     _ocr = PaddleOCR(use_angle_cls=True)
-    get_round(_d, _ocr)
+    print(get_round(_screen, _ocr))

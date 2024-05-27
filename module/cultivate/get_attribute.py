@@ -9,7 +9,7 @@ def get_attribute(ocr: ddddocr.DdddOcr, screen: np.array):
     for x in x_li:
         cropped_image = screen[855:882, x:x + 66]
         handler = ImageHandler()
-        number = handler.get_text_from_image_dddd(ocr, cropped_image)
+        number = handler.get_text_from_image(ocr, cropped_image)
         try:
             attribute_li.append(int(number))
         except ValueError as e:

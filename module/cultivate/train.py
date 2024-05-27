@@ -34,8 +34,11 @@ def train(d: u2.connect, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR, setting_dic: di
     handler = ImageHandler()
     train_type_text = handler.get_text_from_image(ocr, cropped_image)[0:2]
     print(train_type_text)
+    if " " not in train_type_text:
     # train_index = get_train_index(self, train_type_text)
-    train_index = train_index_dic[train_type_text]
+        train_index = train_index_dic[train_type_text]
+    else:
+        train_index = 0
     print(train_index)
 
     chose_selection_dictionary = {}
