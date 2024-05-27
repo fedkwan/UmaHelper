@@ -52,8 +52,8 @@ def after_cultivate(
         if (
             np.all(screen[420, 300] == np.array([40, 211, 158]))
             and np.all(screen[420, 320] == np.array([40, 211, 158]))
+            and np.all(screen[420, 440] == np.array([40, 211, 158]))
             and np.all(screen[420, 460] == np.array([40, 211, 158]))
-            and np.all(screen[480, 700] == np.array([142, 120, 125]))
         ):
 
             # 识别右上方【能力详情】按钮，再次 确认判断
