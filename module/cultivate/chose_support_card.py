@@ -37,7 +37,7 @@ def chose_support_card(d: u2.connect, setting_dic: dict):
             # 用确认页面 消耗金币 底下的绿色来判断，这里是选择好友支援
             if np.all(screen[1060, 60] != np.array([73, 201, 73])):
                 handler = ImageHandler()
-                best_match = handler.find_sub_image(sub_image, screen, 0.8)
+                best_match = handler.find_sub_image(sub_image, screen, 0.7)
 
                 # 最好是按 关注 + 最后登入 升序 来排列，提前关注好想要用的支援卡的好友
                 if best_match is not None:

@@ -20,6 +20,11 @@ from module.cultivate.before_cultivate import *
 from module.cultivate.after_cultivate import *
 
 
+logging.getLogger("airtest").setLevel(logging.ERROR)
+logging.getLogger("ppocr").setLevel(logging.ERROR)
+logging.getLogger("ddddocr").setLevel(logging.ERROR)
+
+
 class Ura:
 
     def __init__(
@@ -33,34 +38,35 @@ class Ura:
         self.d = d
         self.ocr = ocr
         self.p_ocr = p_ocr
-        self.setting_dic = importlib.import_module("customer_setting" + "." + setting_file).data
-
+        self.setting_dic = importlib.import_module(
+            "customer_setting" + "." + setting_file
+        ).data
 
     def run(self):
 
-        round_temp = -1
+        last_ocr_round = -1
         while True:
             screen = self.d.screenshot(format="opencv")
 
-            page = in_which_page(screen, self.ocr, self.p_ocr)
+            page = get_in_which_page(screen, self.ocr, self.p_ocr)
             if page is not None:
                 print(page)
 
             if page == "main":
                 # 识别不清楚就点开竞赛看
-                if round_temp != -1:
-                    round_num = round_temp
+
+                if last_ocr_round == 2674:
+                    this_round = competition_round_text_to_round_num(self.d, self.p_ocr)
+                    last_ocr_round = this_round
                 else:
-                    round_num = get_round(screen, self.p_ocr)
-                    print(round_num)
-                    if round_num == 2674:
-                        round_num = competition_round_text_to_round_num(
-                            self.d, self.p_ocr
-                        )
-                        round_temp = round_num
-                print("round:" + str(round_num))
+                    this_round = get_round(screen, self.p_ocr)
+                    if this_round == 2674:
+                        last_ocr_round = this_round
+                        continue
+                print("round:" + str(this_round))
+
                 # 历战最重要
-                if self.setting_dic["schedule"][round_num] in [2, 3, 4]:
+                if self.setting_dic["schedule"][this_round] in [2, 3, 4]:
                     self.d.click(510, 1130)
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
@@ -81,7 +87,7 @@ class Ura:
                 # 休息和外出（我觉得其实可以不用考虑合宿心情太差
                 camp = [37, 38, 39, 40, 61, 62, 63, 64]
                 if mood > 1 and power < 80:
-                    if round_num in camp:
+                    if this_round in camp:
                         self.d.click(120, 990)
                         time.sleep(DEFAULT_SLEEP_TIME)
                         continue
@@ -105,40 +111,12 @@ class Ura:
                 time.sleep(DEFAULT_SLEEP_TIME * 4)
                 continue
 
-            if page == "fans_require":
-                self.d.click(200, 920)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "target_times_require":
-                self.d.click(200, 920)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "consecutive_competition":
-                self.d.click(520, 820)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "target_competition_fans_require":
-                self.d.click(200, 920)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
             if page == "event":
                 self.d.click(360, 720)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
             if page == "competition":
-                self.d.click(360, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-            if page == "competition_set_round":
-                self.d.click(550, 1130)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-            if page == "competition_set_select":
                 self.d.click(360, 1080)
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
@@ -165,9 +143,11 @@ class Ura:
 
             if page == "app_main":
                 before_cultivate(self.d, self.ocr, self.setting_dic)
+                continue
 
             if page == "train_end":
                 after_cultivate(self.d, self.ocr, self.p_ocr, self.setting_dic)
+                break
 
             # 如果都不是以上这些，则进入识图操作
             sub_image_file_li = get_png_files(self.dir + "/click")
@@ -183,10 +163,27 @@ class Ura:
                     time.sleep(DEFAULT_SLEEP_TIME)
                     continue
 
+            # 如果都不是以上这些，则进入识图操作，查找类的需要判断逻辑
+            sub_image_file_li = get_png_files(self.dir + "/find_to_click")
+            for sub_image_file in sub_image_file_li:
+                file_name_li = sub_image_file[0:-4].split("-")
+                [click_x, click_y] = list(map(int, file_name_li[0].split(",")))
+                [x0, x1, y0, y1] = list(map(int, file_name_li[1].split(",")))
+                sub_image = cv2.imread(self.dir + "/find_to_click/" + sub_image_file)
+                handler = ImageHandler()
+                _match = handler.is_sub_image_in_box(
+                    sub_image, screen, x0 - 10, x1 + 10, y0 - 10, y1 + 10
+                )
+                if _match:
+                    print(sub_image_file)
+                    self.d.click(click_x, click_y)
+                    time.sleep(DEFAULT_SLEEP_TIME)
+                    continue
+
 
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = ddddocr.DdddOcr()
     _p_ocr = PaddleOCR(use_angle_cls=True)
-    ura = Ura(_d, _ocr, _p_ocr, "setting_1")
+    ura = Ura(_d, _ocr, _p_ocr, "setting_2")
     ura.run()

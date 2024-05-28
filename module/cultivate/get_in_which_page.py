@@ -6,7 +6,7 @@ from method.image_handler import *
 from method.text_handler import *
 
 
-def in_which_page(screen: np.array, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR):
+def get_in_which_page(screen: np.array, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR):
 
     # 通过底部栏【主页面】的3个蓝色，加上【礼物】按钮的1个红色，判断是否游戏主界面
     if (
@@ -76,61 +76,11 @@ def in_which_page(screen: np.array, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR):
     if inherit_text == "因子":
         return "inherit"
 
-    fans_require_image = cv2.imread(
-        ROOT_DIR + "/resource/cultivate/find/fans_require.png"
-    )
+    toy_require_image = cv2.imread(ROOT_DIR + "/resource/cultivate/find/toy_grab.png")
     handler = ImageHandler()
-    fans_require_match = handler.is_sub_image_in_box(
-        fans_require_image, screen, 247, 476, 310, 350
-    )
-    if fans_require_match:
-        return "fans_require"
-
-    fans_require_image = cv2.imread(
-        ROOT_DIR + "/resource/cultivate/find/target_times_require.png"
-    )
-    handler = ImageHandler()
-    fans_require_match = handler.is_sub_image_in_box(
-        fans_require_image, screen, 230, 492, 310, 350
-    )
-    if fans_require_match:
-        return "target_times_require"
-
-    fans_require_image = cv2.imread(
-        ROOT_DIR + "/resource/cultivate/find/consecutive_competition.png"
-    )
-    handler = ImageHandler()
-    fans_require_match = handler.is_sub_image_in_box(
-        fans_require_image, screen, 292, 428, 393, 434
-    )
-    if fans_require_match:
-        return "consecutive_competition"
-
-    fans_require_image = cv2.imread(
-        ROOT_DIR + "/resource/cultivate/find/target_competition_fans_require.png"
-    )
-    handler = ImageHandler()
-    fans_require_match = handler.is_sub_image_in_box(
-        fans_require_image, screen, 215, 508, 309, 350
-    )
-    if fans_require_match:
-        return "target_competition_fans_require"
-
-    fans_require_image = cv2.imread(ROOT_DIR + "/resource/cultivate/find/toy_grab.png")
-    handler = ImageHandler()
-    fans_require_match = handler.find_sub_image(fans_require_image, screen, 0.8)
-    if fans_require_match:
+    toy_require_match = handler.find_sub_image(toy_require_image, screen, 0.8)
+    if toy_require_match:
         return "toy_grab"
-
-    fans_require_image = cv2.imread(
-        ROOT_DIR + "/resource/cultivate/find/toy_grab_ok.png"
-    )
-    handler = ImageHandler()
-    fans_require_match = handler.is_sub_image_in_box(
-        fans_require_image, screen, 333, 386, 1168, 1202
-    )
-    if fans_require_match:
-        return "toy_grab_ok"
 
     # 通过【基础能力】【场地资质】【距离资质】【脚质资质】的颜色，初步 判断是否是培育结束页面
     if (
