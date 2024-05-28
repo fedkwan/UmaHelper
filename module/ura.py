@@ -16,6 +16,7 @@ from module.cultivate.get_round import *
 from module.cultivate.get_status import *
 from module.cultivate.train import *
 from module.cultivate.add_skill import *
+from module.cultivate.before_cultivate import *
 from module.cultivate.after_cultivate import *
 
 
@@ -32,48 +33,18 @@ class Ura:
         self.d = d
         self.ocr = ocr
         self.p_ocr = p_ocr
-        setting_data = importlib.import_module("customer_setting" + "." + setting_file)
-        self.setting_dic = setting_data.data
+        self.setting_dic = importlib.import_module("customer_setting" + "." + setting_file).data
 
-    def pre_cultivate(self):
-        screen = self.d.screenshot(format="opencv")
 
     def run(self):
 
         round_temp = -1
-
         while True:
             screen = self.d.screenshot(format="opencv")
 
             page = in_which_page(screen, self.ocr, self.p_ocr)
             if page is not None:
                 print(page)
-
-            # 首页则点击进入育成
-            if page == "app_main":
-                self.d.click(550, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "chose_scenario":
-                chose_scenario(self.d, self.setting_dic)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "chose_uma":
-                chose_uma(self.d, self.setting_dic)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "chose_parent_uma":
-                chose_parent_uma(self.d, self.setting_dic)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-            if page == "chose_support_card":
-                chose_support_card(self.d, self.setting_dic)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
 
             if page == "main":
                 # 识别不清楚就点开竞赛看
@@ -192,29 +163,11 @@ class Ura:
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 
+            if page == "app_main":
+                before_cultivate(self.d, self.ocr, self.setting_dic)
+
             if page == "train_end":
-                self.d.click(520, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME)
-                continue
-
-
-            if page == "train_end_title":
                 after_cultivate(self.d, self.ocr, self.p_ocr, self.setting_dic)
-                
-
-            # 如果都不是以上这些，则进入识图操作
-            sub_image_file_li = get_png_files(self.dir + "/jam")
-            for sub_image_file in sub_image_file_li:
-                sub_image = cv2.imread(self.dir + "/jam/" + sub_image_file)
-                matcher = ImageHandler()
-                best_match = matcher.find_sub_image(sub_image, screen)
-                if best_match is not None:
-                    print(sub_image_file)
-                    print(best_match["result"])
-                    click_x, click_y = best_match["result"]
-                    self.d.click(click_x, click_y)
-                    time.sleep(DEFAULT_SLEEP_TIME)
-                    continue
 
             # 如果都不是以上这些，则进入识图操作
             sub_image_file_li = get_png_files(self.dir + "/click")
@@ -235,6 +188,5 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = ddddocr.DdddOcr()
     _p_ocr = PaddleOCR(use_angle_cls=True)
-    ura = Ura(_d, _ocr, _p_ocr)
-    ura.pre_cultivate()
+    ura = Ura(_d, _ocr, _p_ocr, "setting_1")
     ura.run()

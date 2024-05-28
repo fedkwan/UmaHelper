@@ -1,3 +1,5 @@
+import importlib
+
 import uiautomator2 as u2
 import numpy as np
 
@@ -7,6 +9,8 @@ from method.image_handler import *
 from module.cultivate.add_skill import *
 
 logging.getLogger("airtest").setLevel(logging.ERROR)
+logging.getLogger("ppocr").setLevel(logging.ERROR)
+logging.getLogger("ddddocr").setLevel(logging.ERROR)
 
 
 def after_cultivate(
@@ -26,7 +30,7 @@ def after_cultivate(
         ):
 
             # 识别右下角【培养结束】4个字，再次 确认判断
-            _image = cv2.imread(ROOT_DIR + "/resource/cultivate/find/train_end.png")
+            _image = cv2.imread(ROOT_DIR + "/resource/after_cultivate/find/train_end.png")
             handler = ImageHandler()
             match = handler.is_sub_image_in_box(_image, screen, 445, 561, 1065, 1105)
             if match:
@@ -57,7 +61,7 @@ def after_cultivate(
         ):
 
             # 识别右上方【能力详情】按钮，再次 确认判断
-            _image = cv2.imread(ROOT_DIR + "/resource/cultivate/find/skill_detail.png")
+            _image = cv2.imread(ROOT_DIR + "/resource/after_cultivate/find/skill_detail.png")
             handler = ImageHandler()
             match = handler.is_sub_image_in_box(_image, screen, 600, 690, 300, 390)
             if match:
@@ -112,6 +116,8 @@ def after_cultivate(
                 click_x, click_y = best_match["result"]
                 d.click(click_x, click_y)
                 print("click:::当前点击了" + sub_image_file)
+                if sub_image_file == "to_app_main.png":
+                    break
                 time.sleep(DEFAULT_SLEEP_TIME)
                 continue
 

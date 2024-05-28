@@ -19,7 +19,6 @@ def chose_scenario(d: u2.connect, setting_dic: dict):
     while True:
         screen = d.screenshot(format="opencv")
         if np.all(screen[1016, scenario_to_x_dic[target_scenario]] == np.array([24, 222, 156])):
-            d.click(360, 1080)
             break
         d.click(30, 585)
         time.sleep(DEFAULT_SLEEP_TIME)

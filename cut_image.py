@@ -3,6 +3,7 @@ import uiautomator2 as u2
 from method.text_handler import *
 import onnxruntime as ort
 import cv2
+
 ort.set_default_logger_severity(3)
 # ocr = ddddocr.DdddOcr()
 
@@ -12,7 +13,7 @@ screen = d.screenshot(format="opencv")
 
 
 print(screen.shape)
-cropped_image = screen[816:854, 125:278]
+cropped_image = screen[1164:1202, 442:583]
 cv2.imwrite("cut" + str(time.time()) + ".png", cropped_image)
 
 # text_recognizer = TextRecognizer(cropped_image, ocr)

@@ -22,9 +22,6 @@ def chose_uma(d: u2.connect, setting_dic: dict):
         if best_match is not None:
             click_x, click_y = best_match["result"]
             d.click(click_x, click_y)
-            time.sleep(DEFAULT_SLEEP_TIME)
-            d.click(360, 1080)
-            time.sleep(DEFAULT_SLEEP_TIME)
             break
         else:
             d.swipe(360, 900, 360, 700, 1)

@@ -18,24 +18,22 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
         # 第1位 隔壁的蓝色来判断，是准备进入选种马阶段
         if np.all(screen[660, 110] == np.array([247, 179, 36])):
 
-            # 如果没有遗传树，左边没有就点左边
+            # 如果没有【遗传树】的灰色，左边没有就点左边
             if np.all(screen[775, 215] != np.array([196, 196, 196])):
                 d.click(110, 800)
                 time.sleep(DEFAULT_SLEEP_TIME)
 
-            # 如果没有遗传树，右边没有就点右边
+            # 如果没有【遗传树】的灰色，右边没有就点右边
             elif np.all(screen[775, 555] != np.array([196, 196, 196])):
                 d.click(450, 800)
                 time.sleep(DEFAULT_SLEEP_TIME)
 
             # 两边都选好了，就点下一步
             else:
-                d.click(360, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME)
                 break
 
         # 选马娘里面，蓝色边框就是第1位
-        if np.all(screen[690, 360] == np.array([245, 194, 87])):
+        if np.all(screen[690, 360] == np.array([245, 194, 86])):
             scroll_to_chose_parent_uma(d, uma_rank_1)
 
         # 选马娘里面，粉色边框就是第2位
@@ -54,7 +52,7 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
         time.sleep(DEFAULT_SLEEP_TIME)
 
         # 这里统一处理一下吧，不想放到外面的循环去处理，显得比较整洁
-        sub_image = cv2.imread(ROOT_DIR + "/resource/general/ok.png")
+        sub_image = cv2.imread(ROOT_DIR + "/resource/before_cultivate/find/ok.png")
         handler = ImageHandler()
         best_match = handler.find_sub_image(sub_image, screen)
         if best_match is not None:
@@ -63,7 +61,7 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
             time.sleep(DEFAULT_SLEEP_TIME)
 
 
-def scroll_to_chose_parent_uma(d: u2.connect(), rank: int):
+def scroll_to_chose_parent_uma(d: u2.connect, rank: int):
     rank = rank - 1
     count = 0
     while True:
