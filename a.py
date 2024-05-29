@@ -11,7 +11,7 @@ strings = [s.strip() for s in strings]
 string_counts = Counter(strings)
 
 # 将统计结果转换为字典
-string_counts_dict = dict(string_counts)
+string_counts_dic = dict(string_counts)
 
 # 输出结果
-print(string_counts_dict)
+print(string_counts_dic)

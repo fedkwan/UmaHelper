@@ -1,9 +1,8 @@
-import time
 import importlib
 
 import uiautomator2 as u2
 
-from method.base import *
+from setting.base import *
 from module.cultivate.get_attribute import *
 from module.cultivate.get_attribute_up_if_train import *
 
@@ -41,11 +40,11 @@ def train(d: u2.connect, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR, setting_dic: di
         train_index = 0
     print(train_index)
 
-    chose_selection_dictionary = {}
+    chose_selection_dicionary = {}
     # 如果点进去这个正好是需要训练的，那就先看
     if train_index in train_selection_li:
         result_li = get_attribute_up_if_train(screen, ocr, train_index)
-        chose_selection_dictionary[100 + train_index * 130] = sum(result_li)
+        chose_selection_dicionary[100 + train_index * 130] = sum(result_li)
         train_selection_li.remove(train_index)
     print(train_selection_li)
 
@@ -56,11 +55,11 @@ def train(d: u2.connect, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR, setting_dic: di
         time.sleep(0.3)
         _screen_image = d.screenshot(format="opencv")
         result_li = get_attribute_up_if_train(_screen_image, ocr, selection)
-        chose_selection_dictionary[x] = sum(result_li)
-    print(chose_selection_dictionary)
+        chose_selection_dicionary[x] = sum(result_li)
+    print(chose_selection_dicionary)
 
     # 选出最终需要训练的
-    max_value_key = max(chose_selection_dictionary, key=chose_selection_dictionary.get)
+    max_value_key = max(chose_selection_dicionary, key=chose_selection_dicionary.get)
     d.click(max_value_key, 1080)
     time.sleep(DEFAULT_SLEEP_TIME)
     d.click(max_value_key, 1080)

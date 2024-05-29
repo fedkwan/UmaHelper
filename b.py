@@ -1,5 +1,4 @@
-import os
-from method.base import *
+from setting.base import *
 
 
 def get_png_files(folder):

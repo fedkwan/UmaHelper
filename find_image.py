@@ -1,10 +1,8 @@
 import uiautomator2 as u2
-import onnxruntime as ort
 
 from method.image_handler import *
-from method.utils import *
 
-from method.base import *
+from setting.base import *
 
 ort.set_default_logger_severity(3)
 ocr = ddddocr.DdddOcr()

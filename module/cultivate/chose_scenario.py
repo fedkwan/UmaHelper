@@ -1,9 +1,8 @@
 import uiautomator2 as u2
 import importlib
 import time
-import numpy as np
 
-from method.base import *
+from setting.base import *
 from method.utils import *
 
 

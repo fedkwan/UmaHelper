@@ -4,7 +4,7 @@ import importlib
 import uiautomator2 as u2
 from paddleocr import PaddleOCR
 
-from method.base import *
+from setting.base import *
 from method.utils import *
 from method.text_handler import *
 from module.cultivate.skill_dic import *
@@ -142,5 +142,5 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = PaddleOCR()
     _setting_dic = importlib.import_module("customer_setting.setting_1").data
-    _addskill = AddSkill(_ocr, _d, _setting_dic)
+    _addskill = AddSkill(_d, _ocr, _setting_dic)
     _addskill.run()

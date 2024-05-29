@@ -1,9 +1,5 @@
-import numpy as np
-
-from method.base import *
-from method.utils import *
+from setting.base import *
 from method.image_handler import *
-from method.text_handler import *
 
 
 def get_in_which_page(screen: np.array, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR):

@@ -1,21 +1,7 @@
-import time
-import os
-import importlib
-
-import ddddocr
-import uiautomator2 as u2
-from paddleocr import PaddleOCR
-
-from method.base import *
 from module.cultivate.get_in_which_page import *
-from module.cultivate.chose_scenario import *
-from module.cultivate.chose_uma import *
-from module.cultivate.chose_parent_uma import *
-from module.cultivate.chose_support_card import *
 from module.cultivate.get_round import *
 from module.cultivate.get_status import *
 from module.cultivate.train import *
-from module.cultivate.add_skill import *
 from module.cultivate.before_cultivate import *
 from module.cultivate.after_cultivate import *
 

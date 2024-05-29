@@ -1,9 +1,8 @@
 import re
 
 import uiautomator2 as u2
-import numpy as np
 
-from method.base import *
+from setting.base import *
 from method.image_handler import *
 
 logging.getLogger("airtest").setLevel(logging.ERROR)

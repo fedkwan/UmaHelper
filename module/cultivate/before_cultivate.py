@@ -1,11 +1,3 @@
-import importlib
-
-import uiautomator2 as u2
-import numpy as np
-
-from method.base import *
-from method.utils import *
-from method.image_handler import *
 from module.cultivate.chose_scenario import *
 from module.cultivate.chose_uma import *
 from module.cultivate.chose_parent_uma import *
