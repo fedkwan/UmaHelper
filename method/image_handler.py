@@ -36,6 +36,24 @@ class ImageHandler:
             if x0 < center[0] < x1 and y0 < center[1] < y1:
                 return True
         return False
+    
+    @staticmethod
+    def is_sub_image_in_box2(
+        small_image: np.array,
+        big_image: np.array,
+        position_list: list,
+        threshold: float = 0.9,
+    ) -> bool:
+        temp = TemplateMatching(small_image, big_image, threshold)
+        best_match = temp.find_best_result()
+        if best_match is not None:
+            center = best_match["result"]
+            if (
+                position_list[0] < center[0] < position_list[1]
+                and position_list[2] < center[1] < position_list[3]
+            ):
+                return True
+        return False
 
     @staticmethod
     def get_text_from_image(ocr: ddddocr.DdddOcr, image: np.array) -> str:

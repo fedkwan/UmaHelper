@@ -171,5 +171,5 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _ocr = ddddocr.DdddOcr()
     _p_ocr = PaddleOCR(use_angle_cls=True)
-    ura = Ura(_d, _ocr, _p_ocr, "setting_2")
+    ura = Ura(_d, _ocr, _p_ocr, "setting_1")
     ura.run()
