@@ -32,7 +32,7 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
                 break
 
         # 选马娘里面，蓝色边框就是第1位
-        if np.all(screen[690, 360] == np.array([245, 194, 86])):
+        if np.all(screen[690, 360] == np.array([245, 194, 87])):
             scroll_to_chose_parent_uma(d, uma_rank_1)
 
         # 选马娘里面，粉色边框就是第2位
@@ -77,15 +77,13 @@ def scroll_to_chose_parent_uma(d: u2.connect, rank: int):
         x_li = [90, 225, 360, 495, 630, 90, 225, 360, 495, 630]
         if int(rank / 10) == count:
             p = rank % 10
-            if p <= 5:
+            if p < 5:
                 d.click(x_li[p], merged_array[0])
                 time.sleep(DEFAULT_SLEEP_TIME)
                 d.click(360, 1080)
-            elif p > 5:
+            elif p >= 5:
                 d.click(x_li[p], merged_array[1])
                 time.sleep(DEFAULT_SLEEP_TIME)
-
-                # 决定
                 d.click(360, 1080)
             break
 
