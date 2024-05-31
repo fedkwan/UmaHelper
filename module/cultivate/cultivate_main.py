@@ -16,7 +16,7 @@ def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
     # 历战最重要
     if setting_dic["schedule"][this_round] in [2, 3, 4]:
         d.click(510, 1130)
-        time.sleep(DEFAULT_SLEEP_TIME)
+        time.sleep(DEFAULT_SLEEP_TIME * 6)
 
     # 然后是看病，看病不能用自动点击了，否则按照程序的运行逻辑会到最后才运行
     sub_image = cv2.imread(cultivate_dir + "/find/clinic.png")

@@ -47,7 +47,7 @@ ura_cultivate_page_data = {
             (790, 660): [162, 102, 255],
         },
         "sub_image_position": [587, 645, 229, 260],
-        "expect_page_list": ["main"],
+        "expect_page_list": ["cultivate_main"],
     },
     "cultivate_main": {
         "points": {
@@ -67,7 +67,7 @@ ura_cultivate_page_data = {
             (850, 690): [204, 187, 14],
         },
         "sub_image_position": [56, 120, 1215, 1249],
-        "expect_page_list": ["main", "event"],
+        "expect_page_list": ["cultivate_main", "event"],
     },
     "event": {
         "points": {
@@ -83,7 +83,7 @@ ura_cultivate_page_data = {
             (643, 360): [8, 207, 121],
         },
         "sub_image_position": [29, 71, 0, 1280],
-        "expect_page_list": ["main"],
+        "expect_page_list": ["cultivate_main"],
     },
     "cultivate_end": {
         "points": {
