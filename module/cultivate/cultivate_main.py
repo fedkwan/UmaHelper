@@ -16,7 +16,8 @@ def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
     # 历战最重要
     if setting_dic["schedule"][this_round] in [2, 3, 4]:
         d.click(510, 1130)
-        time.sleep(DEFAULT_SLEEP_TIME * 6)
+        time.sleep(DEFAULT_SLEEP_TIME * 4)
+        return
 
     # 然后是看病，看病不能用自动点击了，否则按照程序的运行逻辑会到最后才运行
     sub_image = cv2.imread(cultivate_dir + "/find/clinic.png")
@@ -25,6 +26,7 @@ def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
     if best_match:
         d.click(140, 1155)
         time.sleep(DEFAULT_SLEEP_TIME)
+        return
 
     # 然后是外出和休息
     status_dic = get_status(screen)
@@ -36,12 +38,15 @@ def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
         if this_round in camp:
             d.click(120, 990)
             time.sleep(DEFAULT_SLEEP_TIME)
+            return
         else:
             d.click(360, 1130)
             time.sleep(DEFAULT_SLEEP_TIME)
+            return
     elif power < 45:
         d.click(120, 990)
         time.sleep(DEFAULT_SLEEP_TIME)
+        return
 
     # 都没事，就去训练
     d.click(360, 990)
