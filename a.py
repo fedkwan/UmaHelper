@@ -126,30 +126,27 @@ def page_action(page):
 
 setting_dic = importlib.import_module("customer_setting.setting_1").data
 dic = ura_cultivate_page_data
-
-d = u2.connect("127.0.0.1:16384")
-# ocr = ddddocr.DdddOcr()
-# p_ocr = PaddleOCR(use_angle_cls=True)
-
 page_list = []
 jam = 0
+
+d = u2.connect("127.0.0.1:16384")
 ocr = ddddocr.DdddOcr()
-p_ocr = PaddleOCR()
+p_ocr = PaddleOCR(use_angle_cls=True)
 while True:
     screen = d.screenshot(format="opencv")
 
     page = get_page_and_expect_list(screen, page_list)
     print(page)
-    if jam >= 1:
-        check_click()
-        check_tap()
-        check_find()
+    if jam >= 5:
         d.click(360, 60)
         jam = 0
         page_list = []
         continue
     if page is None:
         jam += 1
+        check_click()
+        check_tap()
+        check_find()
         time.sleep(DEFAULT_SLEEP_TIME)
         continue
 
