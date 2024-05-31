@@ -144,7 +144,7 @@ while True:
         check_click()
         check_tap()
         check_find()
-        d.click(360, 640)
+        d.click(360, 60)
         jam = 0
         page_list = []
         continue
