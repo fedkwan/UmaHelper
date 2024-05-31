@@ -137,16 +137,15 @@ while True:
 
     page = get_page_and_expect_list(screen, page_list)
     print(page)
-    if jam >= 5:
-        d.click(360, 60)
+    if jam >= 2:
+        check_click()
+        check_tap()
+        check_find()
         jam = 0
         page_list = []
         continue
     if page is None:
-        jam += 1
-        check_click()
-        check_tap()
-        check_find()
+        jam += 1      
         time.sleep(DEFAULT_SLEEP_TIME)
         continue
 
