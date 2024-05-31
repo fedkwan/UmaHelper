@@ -7,6 +7,7 @@ from paddleocr import PaddleOCR
 from setting.base import *
 from method.utils import *
 from method.text_handler import *
+from method.image_handler import *
 from module.cultivate.skill_dic import *
 
 
@@ -19,8 +20,16 @@ class AddSkill:
 
     def run(self):
 
-        print("准备开始第1轮")
+        screen = self.d.screenshot(format="opencv")
+        _image = screen[406:436, 530:630]
+        handler = ImageHandler()
+        text = handler.get_text_from_image(self.ocr, _image)
+        num = find_numbers_in_string(text, "rude")
+        if num < 100:
+            self.d.click(80, 1180)
+            time.sleep(DEFAULT_SLEEP_TIME)
 
+        print("准备开始第1轮")
         # 第一轮，加列表内的技能
         self.add_skill(1)
         self.scroll_to_top()
@@ -39,12 +48,12 @@ class AddSkill:
     def add_skill(self, step):
 
         while True:
-            screen = self.d.screenshot(format="opencv")
 
-            cropped_image = screen[406:436, 530:630]
-            result = self.ocr.ocr(cropped_image)[0]
-            ocred_skill_point_text = "".join(r[1][0] for r in result)
-            num = find_numbers_in_string(ocred_skill_point_text, "rude")
+            screen = self.d.screenshot(format="opencv")
+            _image = screen[406:436, 530:630]
+            handler = ImageHandler()
+            text = handler.get_text_from_image(self.ocr, _image)
+            num = find_numbers_in_string(text, "rude")
             if num < 100:
                 self.d.click(360, 1080)
                 break
@@ -83,7 +92,6 @@ class AddSkill:
 
             if np.all(screen[1013, 700] == np.array([142, 120, 125])):
                 break
-
             time.sleep(DEFAULT_SLEEP_TIME)
 
     def scroll_to_top(self):

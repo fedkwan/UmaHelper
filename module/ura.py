@@ -3,7 +3,7 @@ from module.cultivate.get_round import *
 from module.cultivate.get_status import *
 from module.cultivate.train import *
 from module.cultivate.before_cultivate import *
-from module.cultivate.after_cultivate import *
+from module.cultivate.cultivate_end import *
 
 
 logging.getLogger("airtest").setLevel(logging.ERROR)
@@ -130,10 +130,6 @@ class Ura:
             if page == "app_main":
                 before_cultivate(self.d, self.ocr, self.setting_dic)
                 continue
-
-            if page == "train_end":
-                after_cultivate(self.d, self.ocr, self.p_ocr, self.setting_dic)
-                break
 
             # 如果都不是以上这些，则进入识图操作
             sub_image_file_li = get_png_files(self.dir + "/click")
