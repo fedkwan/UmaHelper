@@ -2,7 +2,7 @@ import time
 import importlib
 import uiautomator2 as u2
 
-# import ddddocr
+import ddddocr
 # from paddleocr import PaddleOCR
 import numpy as np
 
@@ -129,13 +129,13 @@ def page_action(page):
         return
 
     if page == "cultivate_end":
-        # cultivate_end(d, ocr)
+        cultivate_end(d, ocr)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
         return
 
     if page == "add_skill":
-        # add_skill(d, ocr, p_ocr, setting_dic)
-        time.sleep(DEFAULT_SLEEP_TIME * 6)
+        add_skill(d, ocr, p_ocr, setting_dic)
+        time.sleep(DEFAULT_SLEEP_TIME * 4)
         return
 
 

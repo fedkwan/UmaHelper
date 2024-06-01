@@ -11,32 +11,32 @@ from method.image_handler import *
 from module.cultivate.skill_dic import *
 
 
-def add_skill(d, ocr):
+def add_skill(d, ocr, p_ocr, setting_dic):
 
     screen = d.screenshot(format="opencv")
     _image = screen[406:436, 530:630]
     handler = ImageHandler()
     text = handler.get_text_from_image(ocr, _image)
     num = find_numbers_in_string(text, "rude")
+    print(num)
     if num < 100:
         d.click(80, 1180)
         time.sleep(DEFAULT_SLEEP_TIME)
+        return
 
     print("准备开始第1轮")
     # 第一轮，加列表内的技能
-    add_skill_run(d, 1)
-    scroll_to_top()
+    add_skill_run(d, 1, ocr, p_ocr, setting_dic)
+    scroll_to_top(d)
 
     print("准备开始第2轮")
-
     # 第二轮，加跑法和距离技能
-    add_skill_run(d, 2)
-    scroll_to_top()
+    add_skill_run(d, 2, ocr, p_ocr, setting_dic)
+    scroll_to_top(d)
 
     print("准备开始第3轮")
-
     # 第三轮，加完技能点
-    add_skill_run(d, 3)
+    add_skill_run(d, 3, ocr, p_ocr, setting_dic)
 
     screen = d.screenshot(format="opencv")
     _image = screen[406:436, 530:630]
@@ -50,13 +50,11 @@ def add_skill(d, ocr):
 def add_skill_run(d, step, ocr, p_ocr, setting_dic):
 
     while True:
-
         screen = d.screenshot(format="opencv")
         _image = screen[406:436, 530:630]
         handler = ImageHandler()
         text = handler.get_text_from_image(ocr, _image)
         num = find_numbers_in_string(text, "rude")
-        print(num)
         if num < 100:
             d.click(360, 1080)
             break
@@ -75,7 +73,7 @@ def add_skill_run(d, step, ocr, p_ocr, setting_dic):
             skill_text = skill_dic_combine_name_and_description_reversal[
                 most_similar_string
             ]
-            print(skill_text)
+            # print(skill_text)
 
             if step == 1:
                 if skill_text in setting_dic["add_skill_list"]:
@@ -93,8 +91,8 @@ def add_skill_run(d, step, ocr, p_ocr, setting_dic):
 
         d.swipe(360, 900, 360, 500, 1)
 
+        # 滑动到底部
         if np.all(screen[1013, 700] == np.array([142, 120, 125])):
-            print("xxx")
             break
         time.sleep(DEFAULT_SLEEP_TIME)
 
@@ -152,5 +150,7 @@ def get_box_boundary(screen: np.ndarray):
 # test
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
-    _ocr = PaddleOCR()
+    _ocr = ddddocr.DdddOcr()
+    _p_ocr = PaddleOCR()
     _setting_dic = importlib.import_module("customer_setting.setting_1").data
+    add_skill(_d, _ocr, _p_ocr, _setting_dic)
