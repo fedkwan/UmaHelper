@@ -129,14 +129,13 @@ def page_action(page):
         return
 
     if page == "cultivate_end":
-        cultivate_end(d, ocr)
+        # cultivate_end(d, ocr)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
         return
 
     if page == "add_skill":
-        add_skill = AddSkill(d, ocr, p_ocr, setting_dic)
-        add_skill.run()
-        time.sleep(DEFAULT_SLEEP_TIME * 10)
+        # add_skill(d, ocr, p_ocr, setting_dic)
+        time.sleep(DEFAULT_SLEEP_TIME * 6)
         return
 
 
