@@ -8,12 +8,12 @@ schedule 值的含义
 """
 data = {
     "target_scenario": "ura",
-    "uma_name": "sakura_bakushin",
-    "uma_chinese_name": "櫻花驀進王",
-    "parent_uma_rank_1": 10,
-    "parent_uma_rank_2": 6,
-    "parent_uma_rank_friend": 3,
-    "support_card_png_name": "200px-Support_thumb_30078.png",
+    "uma_name": "vodka",
+    "uma_chinese_name": "伏特加",
+    "parent_uma_rank_1": 2,
+    "parent_uma_rank_2": 3,
+    "parent_uma_rank_friend": 2,
+    "support_card_png_name": "200px-Support_thumb_30016.png",
     "train_benefit": [20, 0, 10, 0, 0],
     "train_target": [800, 400, 600, 200, 800],
     "add_skill_list": [],

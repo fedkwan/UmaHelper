@@ -20,19 +20,12 @@ def chose_uma(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
     icon_dir = ROOT_DIR + "/resource/icon"
     sub_image = cv2.imread(icon_dir + "/" + uma_name + ".png")
 
-    scroll_to_top(d)
+    handler = ImageHandler()
+    best_match = handler.find_sub_image(sub_image, screen, 0.7)
+    if best_match is not None:
+        click_x, click_y = best_match["result"]
+        d.click(click_x, click_y)
 
-    while True:
-        screen = d.screenshot(format="opencv")
-        handler = ImageHandler()
-        best_match = handler.find_sub_image(sub_image, screen, 0.7)
-        if best_match is not None:
-            click_x, click_y = best_match["result"]
-            d.click(click_x, click_y)
-            break
-        else:
-            d.swipe(360, 900, 360, 700, 1)
-            time.sleep(DEFAULT_SLEEP_TIME)
 
 
 def scroll_to_top(d: u2.connect):

@@ -4,6 +4,7 @@ import uiautomator2 as u2
 
 from setting.base import *
 from method.image_handler import *
+from sub.destroy_account import *
 
 
 def chose_parent_uma(d: u2.connect, setting_dic: dict):
@@ -46,12 +47,15 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
 
             # 否则就选自己的吧
             else:
-                scroll_to_chose_parent_uma(d, uma_rank_2)
+                d.click(650, 70)
+                time.sleep(DEFAULT_SLEEP_TIME * 2)
+                return
+                
 
         time.sleep(DEFAULT_SLEEP_TIME)
 
         # 这里统一处理一下吧，不想放到外面的循环去处理，显得比较整洁
-        sub_image = cv2.imread(ROOT_DIR + "/resource/general/ok.png")
+        sub_image = cv2.imread(ROOT_DIR + "/resource/before_cultivate/find/ok.png")
         handler = ImageHandler()
         best_match = handler.find_sub_image(sub_image, screen)
         if best_match is not None:
