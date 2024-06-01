@@ -19,13 +19,12 @@ def cultivate_end(
     num = find_numbers_in_string(text, "rude")
 
     # 如果小于 100，就说明没什么技能可以加了，点击【培育结束】
-    if num < 100:
-        d.click(520, 1080)
-        time.sleep(DEFAULT_SLEEP_TIME)
-
-    else:
+    if num > 100:
         d.click(200, 1080)
         time.sleep(DEFAULT_SLEEP_TIME)
+    else:
+        d.click(520, 1080)
+        time.sleep(DEFAULT_SLEEP_TIME)        
 
     """
         # 通过【技能Pt】的3个绿色，加上滚动条顶端的1个灰色，判断是否加技能界面
@@ -88,4 +87,4 @@ if __name__ == "__main__":
     _ocr = ddddocr.DdddOcr()
     _p_ocr = PaddleOCR(use_angle_cls=True)
     _setting_dic = importlib.import_module("customer_setting.setting_1").data
-    after_cultivate(_d, _ocr, _p_ocr, _setting_dic)
+    cultivate_end(_d, _ocr)

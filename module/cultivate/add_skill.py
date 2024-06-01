@@ -13,9 +13,10 @@ from module.cultivate.skill_dic import *
 
 class AddSkill:
 
-    def __init__(self, d: u2.connect, ocr: PaddleOCR, setting_dic: dict):
+    def __init__(self, d: u2.connect, ocr: ddddocr.DdddOcr, p_ocr: PaddleOCR, setting_dic: dict):
         self.d = d
         self.ocr = ocr
+        self.p_ocr = p_ocr
         self.setting_dic = setting_dic
 
     def run(self):
@@ -45,6 +46,15 @@ class AddSkill:
         # 第三轮，加完技能点
         self.add_skill(3)
 
+        screen = self.d.screenshot(format="opencv")
+        _image = screen[406:436, 530:630]
+        handler = ImageHandler()
+        text = handler.get_text_from_image(self.ocr, _image)
+        num = find_numbers_in_string(text, "rude")
+        print(num)
+        if num < 100:
+            self.d.click(80, 1080)
+
     def add_skill(self, step):
 
         while True:
@@ -54,6 +64,7 @@ class AddSkill:
             handler = ImageHandler()
             text = handler.get_text_from_image(self.ocr, _image)
             num = find_numbers_in_string(text, "rude")
+            print(num)
             if num < 100:
                 self.d.click(360, 1080)
                 break
@@ -63,7 +74,7 @@ class AddSkill:
                 cropped_image = screen[g[0] : g[0] + 155, 138:483]
 
                 # 识别技能名
-                result = self.ocr.ocr(cropped_image)[0]
+                result = self.p_ocr.ocr(cropped_image)[0]
                 ocred_skill_text = "".join(r[1][0] for r in result)
                 handler = TextHandler()
                 most_similar_string = handler.find_most_similar_str(
@@ -91,6 +102,7 @@ class AddSkill:
             self.d.swipe(360, 900, 360, 500, 1)
 
             if np.all(screen[1013, 700] == np.array([142, 120, 125])):
+                print("xxx")
                 break
             time.sleep(DEFAULT_SLEEP_TIME)
 

@@ -82,46 +82,62 @@ def page_action(page):
     if page == "app_main":
         d.click(550, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 2)
+        return
 
     if page == "chose_scenario":
         chose_scenario(d, setting_dic)
         d.click(360, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
+        return
 
     if page == "chose_uma":
         chose_uma(d, setting_dic)
         d.click(360, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
+        return
 
     if page == "chose_parent_uma":
         chose_parent_uma(d, setting_dic)
         d.click(360, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
+        return
 
     if page == "chose_support_card":
         chose_support_card(d, setting_dic)
         d.click(360, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
+        return
 
     if page == "cultivate_main":
         cultivate_main(d, p_ocr, setting_dic)
         time.sleep(DEFAULT_SLEEP_TIME * 2)
+        return
 
     if page == "train":
         train(d, ocr, p_ocr, setting_dic)
         time.sleep(DEFAULT_SLEEP_TIME * 2)
+        return
 
     if page == "event":
         d.click(360, 720)
+        time.sleep(DEFAULT_SLEEP_TIME)
+        return
+    
+    if page == "toy_grab":
+        d.long_click(360, 1120, 1.2)
+        time.sleep(DEFAULT_SLEEP_TIME * 2)
+        return
 
     if page == "cultivate_end":
         cultivate_end(d, ocr)
-        time.sleep(DEFAULT_SLEEP_TIME * 2)
+        time.sleep(DEFAULT_SLEEP_TIME * 6)
+        return
 
     if page == "add_skill":
-        add_skill = AddSkill(d, p_ocr, setting_dic)
+        add_skill = AddSkill(d, ocr, p_ocr, setting_dic)
         add_skill.run()
-        time.sleep(DEFAULT_SLEEP_TIME * 2)
+        time.sleep(DEFAULT_SLEEP_TIME * 10)
+        return
 
 
 setting_dic = importlib.import_module("customer_setting.setting_1").data

@@ -85,6 +85,16 @@ ura_cultivate_page_data = {
         "sub_image_position": [29, 71, 0, 1280],
         "expect_page_list": ["cultivate_main"],
     },
+    "toy_grab": {
+        "points": {
+            (10, 150): [46, 252, 196],
+            (242, 150): [12, 189, 97],
+            (10, 170): [46, 253, 196],
+            (242, 170): [12, 189, 97],
+        },
+        "sub_image_position": [605, 655, 229, 260],
+        "expect_page_list": ["app_main"],
+    },
     "cultivate_end": {
         "points": {
             (340, 356): [36, 217, 121],
@@ -95,7 +105,7 @@ ura_cultivate_page_data = {
         "sub_image_position": [445, 561, 1065, 1105],
         "expect_page_list": ["add_skill", "app_main"],
     },
-    "add_skill":{
+    "add_skill": {
         "points": {
             (420, 300): [40, 211, 158],
             (420, 320): [40, 211, 158],
@@ -104,5 +114,5 @@ ura_cultivate_page_data = {
         },
         "sub_image_position": [600, 690, 300, 390],
         "expect_page_list": ["cultivate_end", "app_main"],
-    }
+    },
 }
