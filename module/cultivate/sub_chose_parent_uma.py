@@ -55,7 +55,7 @@ def chose_parent_uma(d: u2.connect, setting_dic: dict):
         time.sleep(DEFAULT_SLEEP_TIME)
 
         # 这里统一处理一下吧，不想放到外面的循环去处理，显得比较整洁
-        sub_image = cv2.imread(ROOT_DIR + "/resource/before_cultivate/find/ok.png")
+        sub_image = cv2.imread(ROOT_DIR + "/resource/general/ok.png")
         handler = ImageHandler()
         best_match = handler.find_sub_image(sub_image, screen)
         if best_match is not None:

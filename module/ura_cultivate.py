@@ -91,7 +91,7 @@ def page_action(page):
         return
 
     if page == "chose_uma":
-        chose_uma(d, setting_dic)
+        chose_uma(d, p_ocr, setting_dic)
         d.click(360, 1080)
         time.sleep(DEFAULT_SLEEP_TIME * 6)
         return
@@ -150,7 +150,6 @@ while True:
     screen = d.screenshot(format="opencv")
 
     page = get_page_and_expect_list(screen, page_list)
-    print(page)
     if jam >= 2:
         check_click()
         check_tap()
@@ -163,6 +162,7 @@ while True:
         time.sleep(DEFAULT_SLEEP_TIME)
         continue
 
+    print(page)
     page_action(page)
     print(page + " action done")
 
