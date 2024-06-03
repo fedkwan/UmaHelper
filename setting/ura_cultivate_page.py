@@ -57,7 +57,7 @@ ura_cultivate_page_data = {
             (850, 690): [204, 187, 14],
         },
         "sub_image_position": [560, 640, 957, 1037],
-        "expect_page_list": ["train", "event", "match_list", "skill"],
+        "expect_page_list": ["train", "event", "match", "match_list", "skill"],
     },
     "train": {
         "points": {
@@ -67,6 +67,16 @@ ura_cultivate_page_data = {
             (850, 690): [204, 187, 14],
         },
         "sub_image_position": [56, 120, 1215, 1249],
+        "expect_page_list": ["cultivate_main", "match", "event"],
+    },
+    "match": {
+        "points": {
+            (900, 600): [204, 187, 14],
+            (900, 690): [204, 187, 14],
+            (910, 600): [204, 187, 14],
+            (910, 690): [204, 187, 14],
+        },
+        "sub_image_position": [155, 255, 1050, 1130],
         "expect_page_list": ["cultivate_main", "event"],
     },
     "event": {
@@ -81,6 +91,11 @@ ura_cultivate_page_data = {
             (568, 360): [65, 218, 154],
             (642, 360): [8, 207, 121],
             (643, 360): [8, 207, 121],
+            # 以下是5个选项时候第一个绿色
+            (343, 360): [3, 206, 121],
+            (344, 360): [65, 218, 154],
+            (418, 360): [8, 207, 121],
+            (419, 360): [8, 207, 121],
         },
         "sub_image_position": [29, 71, 0, 1280],
         "expect_page_list": ["cultivate_main"],
@@ -114,5 +129,15 @@ ura_cultivate_page_data = {
         },
         "sub_image_position": [600, 690, 300, 390],
         "expect_page_list": ["cultivate_end", "app_main"],
+    },
+    "pt_not_enough": {
+        "points": {
+            (435, 200): [12, 195, 107],
+            (435, 210): [12, 195, 107],
+            (435, 510): [12, 195, 107],
+            (435, 520): [12, 195, 107],
+        },
+        "sub_image_position": [481, 556, 815, 854],
+        "expect_page_list": ["app_main"],
     },
 }

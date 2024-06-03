@@ -3,6 +3,7 @@ import importlib
 import uiautomator2 as u2
 
 import ddddocr
+
 # from paddleocr import PaddleOCR
 import numpy as np
 
@@ -28,6 +29,7 @@ def get_page_and_expect_list(screen: np.array, page_list: list):
     for page in pages_to_check:
         p = dic[page]["points"]
         count = sum(1 for pk, pv in p.items() if np.all(screen[pk] == np.array(pv)))
+        # print(count)
         if count == 4:
             print("4个点的颜色匹配成功！")
             _image = cv2.imread(ROOT_DIR + "/setting/page/" + page + ".png")
@@ -118,10 +120,20 @@ def page_action(page):
         return
 
     if page == "event":
-        d.click(360, 720)
+        if np.all(screen[679, 360] == np.array([3, 206, 121])):
+            d.click(360, 720)
+        elif np.all(screen[567, 360] == np.array([3, 206, 121])):
+            d.click(360, 610)
+        elif np.all(screen[343, 360] == np.array([3, 206, 121])):
+            d.click(360, 380)
         time.sleep(DEFAULT_SLEEP_TIME)
         return
-    
+
+    if page == "match":
+        d.click(500, 1080)
+        time.sleep(DEFAULT_SLEEP_TIME)
+        return
+
     if page == "toy_grab":
         d.long_click(360, 1120, 1.2)
         time.sleep(DEFAULT_SLEEP_TIME * 2)
@@ -138,7 +150,7 @@ def page_action(page):
         return
 
 
-setting_dic = importlib.import_module("customer_setting.setting_1").data
+setting_dic = importlib.import_module("customer_setting.setting_2").data
 dic = ura_cultivate_page_data
 page_list = []
 jam = 0
@@ -148,9 +160,14 @@ ocr = ddddocr.DdddOcr()
 p_ocr = PaddleOCR(use_angle_cls=True)
 while True:
     screen = d.screenshot(format="opencv")
-
     page = get_page_and_expect_list(screen, page_list)
-    if jam >= 2:
+    print(page)
+
+    if page == "pt_not_enough":
+        d.click(200, 830)
+        break
+
+    if jam >= 1:
         check_click()
         check_tap()
         check_find()
@@ -158,11 +175,10 @@ while True:
         page_list = []
         continue
     if page is None:
-        jam += 1      
+        jam += 1
         time.sleep(DEFAULT_SLEEP_TIME)
         continue
 
-    print(page)
     page_action(page)
     print(page + " action done")
 

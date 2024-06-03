@@ -8,11 +8,12 @@ schedule 值的含义
 """
 data = {
     "target_scenario": "ura",
-    "uma_name": "Maruzensky",
+    "uma_name": "maruzensky",
     "uma_chinese_name": "丸善斯基",
     "parent_uma_rank_1": 8,
-    "parent_uma_rank_2": 10,
+    "parent_uma_rank_2": 7,
     "parent_uma_rank_friend": 3,
+    "support_card_group": 2,
     "support_card_png_name": "200px-Support_thumb_30078.png",
     "train_benefit": [10, 0, 0, 0, 20],
     "train_target": [800, 500, 600, 200, 600],

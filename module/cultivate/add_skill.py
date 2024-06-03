@@ -89,7 +89,7 @@ def add_skill_run(d, step, ocr, p_ocr, setting_dic):
             if step == 3:
                 d.click(650, g[0] + 75)
 
-        d.swipe(360, 900, 360, 500)
+        d.swipe(360, 900, 360, 500, 0.8)
 
         # 滑动到底部
         if np.all(screen[1013, 700] == np.array([142, 120, 125])):
