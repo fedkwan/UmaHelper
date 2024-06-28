@@ -2,11 +2,11 @@ ura_cultivate_page_data = {
     "app_main": {
         "points": {
             (1264, 300): [220, 130, 0],  # y,x : b, g, r
+            (1264, 330): [220, 130, 0],
             (1264, 360): [220, 130, 0],
-            (1264, 420): [220, 130, 0],
             (920, 650): [102, 68, 221],
         },
-        "sub_image_position": [220, 270, 1070, 1110],  # x0, x1, y0, y1
+        "sub_image_position": [220, 270, 1090, 1100],  # x0, x1, y0, y1
         "expect_page_list": ["chose_scenario"],
     },
     "chose_scenario": {

@@ -9,10 +9,11 @@ from method.utils import *
 def chose_scenario(d: u2.connect, setting_dic: dict):
     target_scenario = setting_dic["target_scenario"]
     scenario_to_x_dic = {
-        "ura": 316,
-        "youth": 345,
-        "peak": 375,
-        "idol": 404
+        "ura": 300,
+        "youth": 330,
+        "peak": 359,
+        "idol": 388,
+        "master": 418
     }
 
     while True:
