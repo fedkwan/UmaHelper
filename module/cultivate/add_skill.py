@@ -111,8 +111,8 @@ def get_box_boundary(screen: np.ndarray):
     y = 472  # 472 到 1028 是技能列表的范围
     while y < 1028:
         # 灰色或者金色边界，如果改了UI就要重新适配颜色
-        if np.all(screen[y, 360] == np.array([210, 193, 193])) or np.all(
-            screen[y, 360] == np.array([57, 193, 255])
+        if np.all(screen[y, 360] == np.array([211, 193, 195])) or np.all(
+            screen[y, 360] == np.array([58, 192, 255])
         ):
             y_li.append(y)
         y += 1
