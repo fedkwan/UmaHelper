@@ -2,9 +2,10 @@ import importlib
 
 import uiautomator2 as u2
 
-from method.base import *
-from method.utils import *
+from setting.base import *
 from method.image_handler import *
+
+logging.getLogger("airtest").setLevel(logging.ERROR)
 
 
 def chose_support_card(d: u2.connect, setting_dic: dict):
@@ -21,12 +22,13 @@ def chose_support_card(d: u2.connect, setting_dic: dict):
             # 支援卡的加号在不在，在的话点击进去
             if np.all(screen[679, 571] == np.array([23, 219, 153])):
                 d.click(571, 679)
-                time.sleep(DEFAULT_SLEEP_TIME)
+                time.sleep(DEFAULT_SLEEP_TIME * 6)
+                continue
 
             # 不在的话说明搞定了，开始培育
             else:
                 d.click(360, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME * 2)
+                time.sleep(DEFAULT_SLEEP_TIME * 6)
                 break
 
         # 选择好友支援 / 最后确认 的标题栏都是这样的
@@ -34,10 +36,10 @@ def chose_support_card(d: u2.connect, setting_dic: dict):
             screen[85, 360] == np.array([12, 195, 109])
         ):
 
-            # 用确认页面 消耗金币 底下的绿色来判断，这里是选择好友支援
+            # 用标题栏来判断，这里是选择好友支援
             if np.all(screen[1060, 60] != np.array([73, 201, 73])):
                 handler = ImageHandler()
-                best_match = handler.find_sub_image(sub_image, screen, 0.7)
+                best_match = handler.find_sub_image(sub_image, screen, 0.6)
 
                 # 最好是按 关注 + 最后登入 升序 来排列，提前关注好想要用的支援卡的好友
                 if best_match is not None:

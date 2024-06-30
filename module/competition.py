@@ -1,10 +1,9 @@
-import time
 import datetime
 import importlib
 
 import uiautomator2 as u2
 
-from method.base import *
+from setting.base import *
 from method.utils import *
 from method.image_handler import *
 
