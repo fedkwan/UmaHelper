@@ -28,7 +28,7 @@ def chose_support_card(d: u2.connect, setting_dic: dict):
             # 不在的话说明搞定了，开始培育
             else:
                 d.click(360, 1080)
-                time.sleep(DEFAULT_SLEEP_TIME * 2)
+                time.sleep(DEFAULT_SLEEP_TIME * 6)
                 break
 
         # 选择好友支援 / 最后确认 的标题栏都是这样的

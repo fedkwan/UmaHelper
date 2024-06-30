@@ -30,6 +30,7 @@ def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
 
     # 然后是外出和休息
     status_dic = get_status(screen)
+    print(status_dic)
     power = status_dic["power"]
     mood = status_dic["mood"]
     # 休息和外出（我觉得其实可以不用考虑合宿心情太差

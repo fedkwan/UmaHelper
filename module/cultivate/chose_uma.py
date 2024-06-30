@@ -9,6 +9,7 @@ from method.image_handler import *
 def chose_uma(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
 
     uma_name = setting_dic["uma_name"]
+    uma_chinese_name = setting_dic["uma_chinese_name"]
 
     screen = d.screenshot(format="opencv")
     text_image = screen[415:445, 35:155]
@@ -16,7 +17,7 @@ def chose_uma(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
     text = handler.get_text_from_image_paddle(p_ocr, text_image)
     print(uma_name)
     print(text)
-    if text == uma_name:
+    if text == uma_chinese_name:
         return
 
     icon_dir = ROOT_DIR + "/resource/icon"
@@ -50,5 +51,5 @@ def scroll_to_top(d: u2.connect):
 if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _p_ocr = PaddleOCR()
-    _setting_dic = importlib.import_module("customer_setting.setting_1").data
+    _setting_dic = importlib.import_module("customer_setting.setting_2").data
     chose_uma(_d, _p_ocr, _setting_dic)

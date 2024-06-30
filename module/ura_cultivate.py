@@ -32,6 +32,7 @@ def get_page_and_expect_list(screen: np.array, page_list: list):
         # print(count)
         if count == 4:
             print("4个点的颜色匹配成功！")
+            print(page)
             _image = cv2.imread(ROOT_DIR + "/setting/page/" + page + ".png")
             handler = ImageHandler()
             match = handler.is_sub_image_in_box2(

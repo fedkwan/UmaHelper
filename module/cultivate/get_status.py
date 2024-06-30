@@ -21,7 +21,7 @@ def get_status(screen: np.array) -> dict:
             break
 
     # mood
-    mood_list = [[105, 20, 241], [17, 90, 240], [3, 139, 207], [241, 105, 37], [206, 52, 140]]
+    mood_list = [[91, 23, 255], [17, 90, 240], [3, 139, 207], [241, 105, 37], [206, 52, 140]]
     pixel_color = screen[140, 590].tolist()
     result["mood"] = mood_list.index(pixel_color) if pixel_color in mood_list else 5
 
