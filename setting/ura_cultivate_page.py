@@ -118,7 +118,7 @@ ura_cultivate_page_data = {
             (730, 356): [36, 217, 121],
         },
         "sub_image_position": [445, 561, 1065, 1105],
-        "expect_page_list": ["add_skill", "app_main"],
+        "expect_page_list": ["add_skill", "evolution_skill", "app_main"],
     },
     "add_skill": {
         "points": {
@@ -129,6 +129,16 @@ ura_cultivate_page_data = {
         },
         "sub_image_position": [600, 690, 300, 390],
         "expect_page_list": ["cultivate_end", "app_main"],
+    },
+    "evolution_skill": {
+        "points": {
+            (80, 200): [12, 197, 113],
+            (80, 210): [12, 197, 113],
+            (80, 520): [12, 197, 113],
+            (80, 530): [12, 197, 113],
+        },
+        "sub_image_position": [163, 188, 1098, 1122],
+        "expect_page_list": ["evolution_skill", "app_main"],
     },
     "pt_not_enough": {
         "points": {

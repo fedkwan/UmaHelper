@@ -18,6 +18,7 @@ from module.cultivate.cultivate_main import *
 from module.cultivate.train import *
 from module.cultivate.cultivate_end import *
 from module.cultivate.add_skill import *
+from module.cultivate.evolution_skill import *
 
 logging.getLogger("airtest").setLevel(logging.ERROR)
 logging.getLogger("ppocr").setLevel(logging.ERROR)
@@ -57,6 +58,13 @@ def check_click():
 
 def check_tap():
     _image = screen[1040:1075, 310:410]
+    handler = ImageHandler()
+    k = handler.get_text_from_image(ocr, _image)
+    if k.lower() == "tap":
+        d.click(360, 1050)
+        time.sleep(DEFAULT_SLEEP_TIME)
+
+    _image = screen[1185:1220, 310:410]
     handler = ImageHandler()
     k = handler.get_text_from_image(ocr, _image)
     if k.lower() == "tap":
@@ -147,6 +155,11 @@ def page_action(page):
 
     if page == "add_skill":
         add_skill(d, ocr, p_ocr, setting_dic)
+        time.sleep(DEFAULT_SLEEP_TIME * 4)
+        return
+
+    if page == "evolution_skill":
+        evolution_skill(d)
         time.sleep(DEFAULT_SLEEP_TIME * 4)
         return
 
