@@ -9,12 +9,15 @@ def evolution_skill(d):
 
     screen = d.screenshot(format="opencv")
 
+    # 如果可以决定
+    if np.all(screen[1180, 400] != np.array([6, 130, 85])):
+        d.click(520, 1180)
+        return
+
     # 只有一个可以进化
     if np.all(screen[1022, 695] == np.array([241, 241, 241])):
         if np.all(screen[465, 64] != np.array([37, 212, 140])):
             d.click(64, 465)
-        elif np.all(screen[465, 64] == np.array([37, 212, 140])):
-            d.click(520, 1180)
         return
 
     # 不止一个可以进化
@@ -32,7 +35,6 @@ def evolution_skill(d):
 
             # 滑动到底部
             if np.all(screen[1022, 695] == np.array([142, 120, 125])):
-                d.click(520, 1180)
                 return
             time.sleep(DEFAULT_SLEEP_TIME * 2)
 

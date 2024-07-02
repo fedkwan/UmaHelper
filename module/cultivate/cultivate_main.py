@@ -10,7 +10,7 @@ cultivate_dir = ROOT_DIR + "/resource/cultivate"
 def cultivate_main(d: u2.connect, p_ocr: PaddleOCR, setting_dic: dict):
 
     screen = d.screenshot(format="opencv")
-    this_round = get_round(screen, p_ocr)
+    this_round = get_round(screen, p_ocr, setting_dic["target_scenario"])
     print("round:" + str(this_round))
 
     # 历战最重要

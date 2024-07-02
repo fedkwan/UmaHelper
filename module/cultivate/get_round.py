@@ -8,20 +8,27 @@ from method.image_handler import *
 logging.getLogger("airtest").setLevel(logging.ERROR)
 
 
-def get_round(screen: np.array, ocr: PaddleOCR) -> int:
+def get_round(screen: np.array, ocr: PaddleOCR, target_scenario: str) -> int:
     # round
-    cropped_image = screen[44:64, 15:150]
-    handler = ImageHandler()
-    round_text = handler.get_text_from_image_paddle(ocr, cropped_image)
-    round_num = round_text_to_round_num(round_text)
-    return round_num
+    if target_scenario == "ura":
+        cropped_image = screen[44:64, 15:150]
+        handler = ImageHandler()
+        round_text = handler.get_text_from_image_paddle(ocr, cropped_image)
+        round_num = round_text_to_round_num(round_text)
+        return round_num
+    if target_scenario == "youth":
+        cropped_image = screen[42:66, 165:300]
+        handler = ImageHandler()
+        round_text = handler.get_text_from_image_paddle(ocr, cropped_image)
+        round_num = round_text_to_round_num(round_text)
+        return round_num
 
 
 def round_text_to_round_num(round_text: str) -> int:
     round_text = round_text.replace(" ", "")  # 去除空格
     print(round_text)
     round_num, year, month, half = 99, 99, 99, 99
-    if "新" in round_text or "手" in round_text:
+    if ("新" in round_text or "手" in round_text) and "系" not in round_text:
         year = 0
         if "出" in round_text:
             return 1
@@ -90,4 +97,5 @@ if __name__ == "__main__":
     _d = u2.connect("127.0.0.1:16384")
     _screen = _d.screenshot(format="opencv")
     _ocr = PaddleOCR(use_angle_cls=True)
-    print(get_round(_screen, _ocr))
+    # print(get_round(_screen, _ocr))
+    print(get_round_youth(_screen, _ocr))
