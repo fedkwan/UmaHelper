@@ -175,7 +175,7 @@ p_ocr = PaddleOCR(use_angle_cls=True)
 while True:
     screen = d.screenshot(format="opencv")
     page = get_page_and_expect_list(screen, page_list)
-    print(page)
+    # print(page)
 
     if page == "pt_not_enough":
         d.click(200, 830)

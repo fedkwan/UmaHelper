@@ -7,23 +7,34 @@ from method.utils import *
 
 def evolution_skill(d):
 
-    while True:
-        screen = d.screenshot(format="opencv")
+    screen = d.screenshot(format="opencv")
 
-        for y in range(104, 1040):
-            if (
-                np.all(screen[y, 235] == np.array([186, 116, 255]))
-                and np.all(screen[y, 234] == np.array([235, 219, 255]))
-                and np.all(screen[y + 33, 64] != np.array([37, 212, 140]))
-            ):
-                d.click(64, y + 33)
-        d.swipe(360, 900, 360, 500, 0.8)
-
-        # 滑动到底部
-        if np.all(screen[1022, 695] == np.array([142, 120, 125])):
+    # 只有一个可以进化
+    if np.all(screen[1022, 695] == np.array([241, 241, 241])):
+        if np.all(screen[465, 64] != np.array([37, 212, 140])):
+            d.click(64, 465)
+        elif np.all(screen[465, 64] == np.array([37, 212, 140])):
             d.click(520, 1180)
-            break
-        time.sleep(DEFAULT_SLEEP_TIME * 2)
+        return
+
+    # 不止一个可以进化
+    else:
+        while True:
+            screen = d.screenshot(format="opencv")
+            for y in range(104, 1040):
+                if (
+                    np.all(screen[y, 235] == np.array([186, 116, 255]))
+                    and np.all(screen[y, 234] == np.array([235, 219, 255]))
+                    and np.all(screen[y + 33, 64] != np.array([37, 212, 140]))
+                ):
+                    d.click(64, y + 33)
+            d.swipe(360, 900, 360, 500, 0.8)
+
+            # 滑动到底部
+            if np.all(screen[1022, 695] == np.array([142, 120, 125])):
+                d.click(520, 1180)
+                return
+            time.sleep(DEFAULT_SLEEP_TIME * 2)
 
 
 # test
