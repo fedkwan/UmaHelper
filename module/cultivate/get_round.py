@@ -98,4 +98,4 @@ if __name__ == "__main__":
     _screen = _d.screenshot(format="opencv")
     _ocr = PaddleOCR(use_angle_cls=True)
     # print(get_round(_screen, _ocr))
-    print(get_round_youth(_screen, _ocr))
+

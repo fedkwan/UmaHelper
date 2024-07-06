@@ -130,7 +130,7 @@ def page_action(page):
         return
 
     if page == "event":
-        event(d, screen)
+        event(d, screen, setting_dic)
         time.sleep(DEFAULT_SLEEP_TIME)
         return
 
