@@ -130,7 +130,7 @@ def page_action(page):
         return
 
     if page == "event":
-        event(d, screen)
+        event(d, screen, p_ocr, setting_dic)
         time.sleep(DEFAULT_SLEEP_TIME)
         return
 
@@ -160,7 +160,7 @@ def page_action(page):
         return
 
 
-setting_dic = importlib.import_module("customer_setting.setting_2").data
+setting_dic = importlib.import_module("customer_setting.setting_4").data
 dic = ura_cultivate_page_data
 page_list = []
 jam = 0
