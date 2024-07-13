@@ -7,7 +7,7 @@ schedule 值的含义
 4：Ura
 """
 data = {
-    "target_scenario": "youth",
+    "target_scenario": "ura",
     "uma_name": "maruzensky",
     "uma_chinese_name": "丸善斯基",
     "parent_uma_rank_1": 8,
