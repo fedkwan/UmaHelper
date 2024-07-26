@@ -13,6 +13,8 @@ def event(d: u2.connect, screen: np.array, p_ocr: PaddleOCR, setting_dic: dict):
                 d.click(360, 830)
             else:
                 d.click(360, 720)
+        else:
+            d.click(360, 720)
     elif np.all(screen[567, 360] == np.array([3, 206, 121])):
         d.click(360, 610)
     elif np.all(screen[343, 360] == np.array([3, 206, 121])):
